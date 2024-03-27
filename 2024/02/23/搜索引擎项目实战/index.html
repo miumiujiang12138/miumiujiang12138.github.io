@@ -8,15 +8,15 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>搜索引擎项目实战 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="搭建服务端框架服务器的搭建，采用封装好的TcpServer (下篇博客再说明)，然后等待客户端的连接，接收客户端的查询请求。 关键字推荐部分获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。候选词的选取包括以下几个部分：  实现最小编辑距离核心算法—- 计算候选词与查询词的相似度 候选词选择策略：hello helli   优先比较最小">
+  <meta name="description" content="搭建服务端框架服务器的搭建，采用封装好的TcpServer (下篇博客再说明)，然后等待客户端的连接，接收客户端的查询请求。 关键字推荐部分获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。候选词的选取包括以下几个部分：  实现最小编辑距离核心算法—- 计算候选词与查询词的相似度； 候选词选择策略：hello helli；   优先比较">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搜索引擎项目实战">
 <meta property="og:url" content="http://example.com/2024/02/23/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="搭建服务端框架服务器的搭建，采用封装好的TcpServer (下篇博客再说明)，然后等待客户端的连接，接收客户端的查询请求。 关键字推荐部分获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。候选词的选取包括以下几个部分：  实现最小编辑距离核心算法—- 计算候选词与查询词的相似度 候选词选择策略：hello helli   优先比较最小">
+<meta property="og:description" content="搭建服务端框架服务器的搭建，采用封装好的TcpServer (下篇博客再说明)，然后等待客户端的连接，接收客户端的查询请求。 关键字推荐部分获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。候选词的选取包括以下几个部分：  实现最小编辑距离核心算法—- 计算候选词与查询词的相似度； 候选词选择策略：hello helli；   优先比较">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-02-22T16:52:06.000Z">
-<meta property="article:modified_time" content="2024-03-27T05:57:16.592Z">
+<meta property="article:modified_time" content="2024-03-27T06:03:29.457Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="C++  Linux开发">
 <meta name="twitter:card" content="summary">
@@ -178,16 +178,16 @@
         <h1 id="搭建服务端框架"><a href="#搭建服务端框架" class="headerlink" title="搭建服务端框架"></a>搭建服务端框架</h1><p>服务器的搭建，采用封装好的TcpServer (下篇博客再说明)，然后等待客户端的连接，接收客户端的查询请求。</p>
 <h1 id="关键字推荐部分"><a href="#关键字推荐部分" class="headerlink" title="关键字推荐部分"></a>关键字推荐部分</h1><h2 id="获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。"><a href="#获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。" class="headerlink" title="获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。"></a>获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。</h2><p>候选词的选取包括以下几个部分：</p>
 <ol>
-<li>实现最小编辑距离核心算法—- 计算候选词与查询词的相似度</li>
-<li>候选词选择策略：hello helli</li>
+<li>实现最小编辑距离核心算法—- 计算候选词与查询词的相似度；</li>
+<li>候选词选择策略：hello helli；</li>
 </ol>
 <ul>
 <li>优先比较最小编辑距离；</li>
-<li>在编辑距离相同的条件下，再比较候选词的词频；词频越大优先选择</li>
+<li>在编辑距离相同的条件下，再比较候选词的词频；词频越大优先选择；</li>
 <li>在词频相同的条件下，按字母表顺序比较候选词；</li>
 </ul>
 <ol start="3">
-<li>获取k 个（例如3 个或者5 个）候选词，返回给客户端。（需要使用优先级队<br>列）</li>
+<li>获取k 个（例如3 个或者5 个）候选词，返回给客户端。（需要使用优先级队列）</li>
 </ol>
 <h2 id="发送给客户端的数据要采用JSON-数据格式封包。对于Json-开源库的选择，"><a href="#发送给客户端的数据要采用JSON-数据格式封包。对于Json-开源库的选择，" class="headerlink" title="发送给客户端的数据要采用JSON 数据格式封包。对于Json 开源库的选择，"></a>发送给客户端的数据要采用JSON 数据格式封包。对于Json 开源库的选择，</h2><p>可以有多种，比如jsoncpp、或者nlohmann&#x2F;json[位于github 上]，建议用后者，比前者好用。</p>
 <h2 id="功能优化：引入缓存系统"><a href="#功能优化：引入缓存系统" class="headerlink" title="功能优化：引入缓存系统"></a>功能优化：引入缓存系统</h2><p>设计思路：</p>
@@ -203,20 +203,13 @@
 <li>对中文进行分词，需要使用开源的分词库，如cppjieba, NLPIR，所以要了解分词库的用法。推荐使用cppjieba.</li>
 <li>扩展最小编辑距离算法，让其能对中文进行处理。</li>
 </ul>
-<h1 id="网页推荐部分"><a href="#网页推荐部分" class="headerlink" title="网页推荐部分"></a>网页推荐部分</h1><h2 id="建立网页库和网页偏移库"><a href="#建立网页库和网页偏移库" class="headerlink" title="建立网页库和网页偏移库"></a>建立网页库和网页偏移库</h2><ol>
-<li><p>网页库的格式采用xml 的形式，像rss文件一样。</p>
-</li>
-<li><p>将所给语料库中的所有文档按照格式，构造成网页库ripepage.dat。<br>提取网页的标题的策略如下：</p>
-</li>
-</ol>
+<h1 id="网页推荐部分"><a href="#网页推荐部分" class="headerlink" title="网页推荐部分"></a>网页推荐部分</h1><h2 id="建立网页库和网页偏移库"><a href="#建立网页库和网页偏移库" class="headerlink" title="建立网页库和网页偏移库"></a>建立网页库和网页偏移库</h2><p>###网页库的格式采用xml 的形式，像rss文件一样</p>
+<h3 id="将所给语料库中的所有文档按照格式，构造成网页库ripepage-dat"><a href="#将所给语料库中的所有文档按照格式，构造成网页库ripepage-dat" class="headerlink" title="将所给语料库中的所有文档按照格式，构造成网页库ripepage.dat"></a>将所给语料库中的所有文档按照格式，构造成网页库ripepage.dat</h3><p>提取网页的标题的策略如下：</p>
 <ul>
 <li>如果查找到字符串“标题”，则抽取该行的内容为标题；</li>
-<li>如果没有找到，则提取文档的第一行为标题；<br>整个文档的全部内容为content（包括标题）Url 使用每篇文档所在的绝对路径；然后将所有的字符串拼接起来，构成一篇格式化的文档，例如</li>
+<li>如果没有找到，则提取文档的第一行为标题；<br>整个文档的全部内容为content（包括标题）Url 使用每篇文档所在的绝对路径；然后将所有的字符串拼接起来，构成一篇格式化的文档。</li>
 </ul>
-<ol start="3">
-<li>获取格式化好的文档之后，通过C++的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset.dat。</li>
-</ol>
-<h2 id="网页去重"><a href="#网页去重" class="headerlink" title="网页去重"></a>网页去重</h2><p>采用google开源的Simhash算法对网页库进行去重。</p>
+<h3 id="获取格式化好的文档之后，通过C-的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset-dat。"><a href="#获取格式化好的文档之后，通过C-的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset-dat。" class="headerlink" title="获取格式化好的文档之后，通过C++的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset.dat。"></a>获取格式化好的文档之后，通过C++的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset.dat。</h3><h2 id="网页去重"><a href="#网页去重" class="headerlink" title="网页去重"></a>网页去重</h2><p>采用google开源的Simhash算法对网页库进行去重。</p>
 <h2 id="建立倒排索引库"><a href="#建立倒排索引库" class="headerlink" title="建立倒排索引库"></a>建立倒排索引库</h2><p>倒排索引是指一个未经处理的网页库中，一般是以文档ID 作为索引，以文档内容作为记录。而Inverted index 指的是将单词或记录作为索引，将文档ID 作为记录，这样便可以方便地通过单词或记录查找到其所在的文档。</p>
 <p>在此项目中，倒排索引的数据结构采用的是:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unordered_map &lt;string, vector&lt;pair&lt;<span class="type">int</span>, <span class="type">double</span>&gt;&gt;&gt; InvertIndexTable</span><br></pre></td></tr></table></figure>
