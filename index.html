@@ -152,6 +152,91 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-于" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/06/05/%E4%BA%8E/">关于用生成模型（CRBM）对阿尔兹海默症患者病程进行个性化预测的文章汇报</a>
+    </h1>
+  
+
+        
+        <a href="/2024/06/05/%E4%BA%8E/" class="archive-article-date">
+  	<time datetime="2024-06-05T07:11:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-06-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近读了两篇关于用生成模型<em>CRBM</em>（条件限制波尔兹曼机），简单做一些归纳总结。<br>首先，这两篇文章是同一作者所著，第一篇文章<em>关于机器学习在阿尔兹海默症上的应用</em>讨论了CRBM在生成阿尔兹海默症（以下简称AD）患者的医疗记录以及预测AD患者病程轨迹这两个方面的优越性能。第二篇文章<em>使用数字孪生模拟AD患者和MIC患者的病程进展</em>是在第一篇文章提出的CRBM模型基础上，拓展了数据集，并解决了拓展数据集之后出现的问题，使模型能够精准预测AD或者MIC患者的病程进展。</p>
+<h1 id="文章1要解决的问题"><a href="#文章1要解决的问题" class="headerlink" title="文章1要解决的问题"></a>文章1要解决的问题</h1><h2 id="生成虚拟的AD患者医疗记录"><a href="#生成虚拟的AD患者医疗记录" class="headerlink" title="生成虚拟的AD患者医疗记录"></a>生成虚拟的AD患者医疗记录</h2><p>这种生成数据的方法可以帮助专业人员优化临床试验设计、降低试验成本。</p>
+<h2 id="预测AD患者的病程进展-轨迹"><a href="#预测AD患者的病程进展-轨迹" class="headerlink" title="预测AD患者的病程进展&#x2F;轨迹"></a>预测AD患者的病程进展&#x2F;轨迹</h2><p>可以为患者提供个性化的医疗方案，有助于智慧医疗的发展。</p>
+<h1 id="解决问题的价值和意义"><a href="#解决问题的价值和意义" class="headerlink" title="解决问题的价值和意义"></a>解决问题的价值和意义</h1><ul>
+<li>临床数据通常包括不同类型的数据，如连续型、离散型、布尔型、定序型等，CRBM可以轻松地对于多类型变量数据建模，网络中不同的可见节点可对于不同的数据类型同时进行建模，这为处理复杂的临床数据提供了一种强大的工具。</li>
+<li>CRBM允许数据的条件生成和采样，为时间序列数据建模提供了重要条件。</li>
+<li>患者病程进展本身是一个随机过程，因此要求模型可以捕捉到数据中的随机性，而CRBM所提供的mcmc采样自然的捕捉到了数据中的随机性，极大地提高了患者临床医疗记录进展预测的精确性和可靠性。</li>
+</ul>
+<h1 id="怎么解决该问题"><a href="#怎么解决该问题" class="headerlink" title="怎么解决该问题"></a>怎么解决该问题</h1><h2 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h2><p>对于任务一，固定某个时间点，将所有患者（1909名）患者的医疗记录作为输入，模型训练好后会学到在时间点t下的联合概率分布P{<em>X</em>}，从而生成该时间点下的虚拟患者医疗记录。<br>对于任务二，先将某个患者医疗记录上的所有临床变量分为动态变量和静态变量两部分，其中静态变量是指与时间变化无关的一些背景变量，如患者性别、种族等；动态变量是会随时间变化的变量如ADAS认知分数、一些临床上的理化指标等。将患者i在t0时刻和t1时刻的动态变量与静态变量的数据组成一个三元组Vi&#x3D;{<em>X</em>t1(dynamic),<em>X</em>t0(dynamic),<em>X</em>(static)}，总共有1909名患者，将这些处理好的三元组作为输入，模型训练好后会学到P{<em>X</em>t1|<em>X</em>t0}这样的概率分布，这样迭代的学习P{<em>X</em>t2|<em>X</em>t1}、P{<em>X</em>t3|<em>X</em>t2}直到P{<em>X</em>tn|<em>X</em>tn-1},就可以根据学习到的概率分布来生成数据并采样作为预测结果了。</p>
+<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>模型训练方法采用对比散度法。先将网络中的可见单元状态初始化然后根据随机状态方程计算与之连接的隐含单元状态，迭代的计算下去，根据E2更新权重，直至网络稳定（能量函数的值达到最小），表示模型已经训练好或者说模型已经学习到了数据中的概率分布。</p>
+<h2 id="mcmc采样"><a href="#mcmc采样" class="headerlink" title="mcmc采样"></a>mcmc采样</h2><p>模型训练好之后，网络节点间的权重和偏置已经确定，模型可根据这个权重和偏置来生成数据并采样作为最终的生成数据。</p>
+<h1 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h1><h1 id="文章2要解决的问题"><a href="#文章2要解决的问题" class="headerlink" title="文章2要解决的问题"></a>文章2要解决的问题</h1><p>这一篇文章是对上一篇文章的拓展和改进，<img src="/image.png" alt="alt text"></p>
+<h1 id="解决问题的价值和意义-1"><a href="#解决问题的价值和意义-1" class="headerlink" title="解决问题的价值和意义"></a>解决问题的价值和意义</h1><h1 id="怎么解决该问题-1"><a href="#怎么解决该问题-1" class="headerlink" title="怎么解决该问题"></a>怎么解决该问题</h1><h1 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h1>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/06/05/%E4%BA%8E/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-因果推理导论学习1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1131,116 +1216,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2024/02/28/%E4%B8%89%E9%87%8D%E5%A4%A7%E8%84%91%E7%90%86%E8%AE%BA-%E3%80%8A%E8%AE%A4%E7%9F%A5%E8%A7%89%E9%86%92%E3%80%8B%E8%AF%BB%E5%90%8E%E6%84%9F1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-搜索引擎项目实战" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/02/23/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">搜索引擎项目实战</a>
-    </h1>
-  
-
-        
-        <a href="/2024/02/23/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/" class="archive-article-date">
-  	<time datetime="2024-02-22T16:52:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="搭建服务端框架"><a href="#搭建服务端框架" class="headerlink" title="搭建服务端框架"></a>搭建服务端框架</h1><p>服务器的搭建，采用封装好的TcpServer (下篇博客再说明)，然后等待客户端的连接，接收客户端的查询请求。</p>
-<h1 id="关键字推荐部分"><a href="#关键字推荐部分" class="headerlink" title="关键字推荐部分"></a>关键字推荐部分</h1><h2 id="获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。"><a href="#获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。" class="headerlink" title="获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。"></a>获取到客户端传递过来的查询词之后，再从索引之中查找与之相近的候选词，选取到最合适的候选词之后再将其发送给客户端。</h2><p>候选词的选取包括以下几个部分：</p>
-<ol>
-<li>实现最小编辑距离核心算法来计算候选词与查询词的相似度；</li>
-<li>候选词选择策略：hello helli；</li>
-<li>获取k 个（例如3 个或者5 个）候选词，返回给客户端。（需要使用优先级队列）</li>
-</ol>
-<ul>
-<li>优先比较最小编辑距离；</li>
-<li>在编辑距离相同的条件下，再比较候选词的词频；词频越大优先选择；</li>
-<li>在词频相同的条件下，按字母表顺序比较候选词；</li>
-</ul>
-<h2 id="发送给客户端的数据要采用JSON-数据格式封包。对于Json-开源库的选择，"><a href="#发送给客户端的数据要采用JSON-数据格式封包。对于Json-开源库的选择，" class="headerlink" title="发送给客户端的数据要采用JSON 数据格式封包。对于Json 开源库的选择，"></a>发送给客户端的数据要采用JSON 数据格式封包。对于Json 开源库的选择，</h2><p>可以有多种，比如jsoncpp、或者nlohmann&#x2F;json[位于github 上]，建议用后者，比前者好用。</p>
-<h2 id="功能优化：引入缓存系统"><a href="#功能优化：引入缓存系统" class="headerlink" title="功能优化：引入缓存系统"></a>功能优化：引入缓存系统</h2><p>设计思路：</p>
-<ul>
-<li>根据线程池中工作线程的数量，每一个工作线程对应一个缓存。</li>
-<li>每个缓存内部采用LRU 算法对冷数据进行淘汰。</li>
-<li>当工作一段时间后，每个缓存的内容会不一致，因此需要更新缓存。</li>
-<li>更新缓存的操作，交给一个定时器完成，每隔固定的时间，更新缓存数据。</li>
-</ul>
-<h2 id="处理中文语料"><a href="#处理中文语料" class="headerlink" title="处理中文语料"></a>处理中文语料</h2><p>设计思路：</p>
-<ul>
-<li>首先需要对中文进行分词，然后再去统计每个词语的词频，建立中文词典和索引，类似英文的处理。</li>
-<li>对中文进行分词，需要使用开源的分词库，如cppjieba, NLPIR，所以要了解分词库的用法。推荐使用cppjieba.</li>
-<li>扩展最小编辑距离算法，让其能对中文进行处理。</li>
-</ul>
-<h1 id="网页推荐部分"><a href="#网页推荐部分" class="headerlink" title="网页推荐部分"></a>网页推荐部分</h1><h2 id="建立网页库和网页偏移库"><a href="#建立网页库和网页偏移库" class="headerlink" title="建立网页库和网页偏移库"></a>建立网页库和网页偏移库</h2><h3 id="网页库的格式采用xml-的形式，像rss文件一样"><a href="#网页库的格式采用xml-的形式，像rss文件一样" class="headerlink" title="网页库的格式采用xml 的形式，像rss文件一样"></a>网页库的格式采用xml 的形式，像rss文件一样</h3><h3 id="将所给语料库中的所有文档按照格式，构造成网页库ripepage-dat"><a href="#将所给语料库中的所有文档按照格式，构造成网页库ripepage-dat" class="headerlink" title="将所给语料库中的所有文档按照格式，构造成网页库ripepage.dat"></a>将所给语料库中的所有文档按照格式，构造成网页库ripepage.dat</h3><p>提取网页的标题的策略如下：</p>
-<ul>
-<li>如果查找到字符串“标题”，则抽取该行的内容为标题；</li>
-<li>如果没有找到，则提取文档的第一行为标题；<br>整个文档的全部内容为content（包括标题）Url 使用每篇文档所在的绝对路径；然后将所有的字符串拼接起来，构成一篇格式化的文档。</li>
-</ul>
-<h3 id="获取格式化好的文档之后，通过C-的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset-dat。"><a href="#获取格式化好的文档之后，通过C-的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset-dat。" class="headerlink" title="获取格式化好的文档之后，通过C++的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset.dat。"></a>获取格式化好的文档之后，通过C++的文件输出流将文档写到文件中去，同时记录下该篇文档在文件的位置信息，即offset.dat。</h3><h2 id="网页去重"><a href="#网页去重" class="headerlink" title="网页去重"></a>网页去重</h2><p>采用google开源的Simhash算法对网页库进行去重。</p>
-<h2 id="建立倒排索引库"><a href="#建立倒排索引库" class="headerlink" title="建立倒排索引库"></a>建立倒排索引库</h2><p>倒排索引是指一个未经处理的网页库中，一般是以文档ID 作为索引，以文档内容作为记录。而Inverted index 指的是将单词或记录作为索引，将文档ID 作为记录，这样便可以方便地通过单词或记录查找到其所在的文档。</p>
-<p>在此项目中，倒排索引的数据结构采用的是:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unordered_map &lt;string, vector&lt;pair&lt;<span class="type">int</span>, <span class="type">double</span>&gt;&gt;&gt; InvertIndexTable</span><br></pre></td></tr></table></figure>
-<p>其中unorderedmap的key 为出现在文档中的某个词语，对应的value 为包含该词语的文档ID 的集合以及该词语的权重值w</p>
-<p><strong>而建立倒排索引最难的点就在于每个词语的权重值w的计算</strong>，这里采用TF-IDF标准来计算每个词语的权重值w：<br>TF： 某个词在文章中出现的次数；<br>DF： 某个词在所有文章中出现的次数，即包含该词语的文档数量；<br>IDF: 逆文档频率，表示该词对于该篇文章的重要性的一个系数，其计算公式为：<br>IDF &#x3D; log2(N&#x2F;(DF+1))<br>其中N 表示文档的总数或网页库的文档数<br>最后，词语的权重w 则为：<br>w &#x3D; TF * IDF<br>可以看到权重系数与一个词在文档中的出现次数成正比，与该词在整个网页库中的出现次数成反比。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">C++  Linux开发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/02/23/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">展开全文 >></a>
         </p>
       
 
