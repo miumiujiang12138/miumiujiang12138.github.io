@@ -43,15 +43,15 @@
     <link href="http://example.com/2024/06/04/%E5%9B%A0%E6%9E%9C%E6%8E%A8%E7%90%86%E5%AF%BC%E8%AE%BA%E5%AD%A6%E4%B9%A01/"/>
     <id>http://example.com/2024/06/04/%E5%9B%A0%E6%9E%9C%E6%8E%A8%E7%90%86%E5%AF%BC%E8%AE%BA%E5%AD%A6%E4%B9%A01/</id>
     <published>2024-06-04T06:07:51.000Z</published>
-    <updated>2024-06-04T07:21:45.586Z</updated>
+    <updated>2024-06-06T15:10:40.963Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="随机对照试验"><a href="#随机对照试验" class="headerlink" title="随机对照试验"></a>随机对照试验</h1><p>随机</p>]]></content>
+    <content type="html"><![CDATA[<h2 id="因果≠相关"><a href="#因果≠相关" class="headerlink" title="因果≠相关"></a>因果≠相关</h2><ul><li>相关关系：相关关系是指两个变量在概率分布上的相似程度，相关关系本身不用于描述因果关系这种决定性指标。</li><li>因果关系：与相关关系对比，因果关系区分了原因变量和结果变量。借助自然科学研究的思路来定义因果关系，即<strong>假设存在两个目标变量X和Y，在控制能影响Y的一切其他变量保持不变的同时，改变X的状态，观察Y是否随之发生改变。如果Y发生了改变，那么称X是Y的原因，Y是X的结果，X与Y之间具有因果关系</strong>。</li></ul><h3 id="是什么导致因果≠相关呢？"><a href="#是什么导致因果≠相关呢？" class="headerlink" title="是什么导致因果≠相关呢？"></a>是什么导致因果≠相关呢？</h3><p>导致因果≠相关的因素主要有两种：混杂和选择性偏差。</p><ul><li>混杂是指同时影响策略选择和结果变量的变量，混杂的存在会导致评估策略变量对于结果的变量的影响出现偏差。</li><li>选择性偏差也叫对撞偏差，指由于选择<strong>对撞子</strong>作为划分群体的变量导致不同的群体之间出现了虚假的因果效应。</li></ul><h4 id="注：对撞子是指受多个因变量的共同结果。"><a href="#注：对撞子是指受多个因变量的共同结果。" class="headerlink" title="注：对撞子是指受多个因变量的共同结果。"></a>注：对撞子是指受多个因变量的共同结果。</h4><h2 id="随机对照试验"><a href="#随机对照试验" class="headerlink" title="随机对照试验"></a>随机对照试验</h2><p>随机对照试验的<strong>同质群体策略随机分配</strong>的核心理念是评估因果效应的黄金准则。</p><h3 id="同质群体"><a href="#同质群体" class="headerlink" title="同质群体"></a>同质群体</h3><p>同质群体意味着在试验开始时，各组受试者在重要特征（如年龄、性别、健康状况等）上尽可能一致。这样可以减少混杂变量的影响，使得观察到的效果更可能是由于干预措施本身，而不是由于其他潜在的差异。</p><h3 id="策略随机分配"><a href="#策略随机分配" class="headerlink" title="策略随机分配"></a>策略随机分配</h3><p>策略随机分配中的“策略”指的是在随机对照试验（RCT）中，研究人员将受试者随机分配到不同的试验组（如干预组和对照组）。这个过程确保了每个受试者被分配到任意一组的概率是相等的，从而消除了选择性偏差和其他系统性差异。<br>随机对照试验的流程如下：<br><img src="/assets/%E9%9A%8F%E6%9C%BA%E5%AF%B9%E7%85%A7%E8%AF%95%E9%AA%8C.png" alt="随机对照试验流程"></p>]]></content>
     
     
       
       
-    <summary type="html">&lt;h1 id=&quot;随机对照试验&quot;&gt;&lt;a href=&quot;#随机对照试验&quot; class=&quot;headerlink&quot; title=&quot;随机对照试验&quot;&gt;&lt;/a&gt;随机对照试验&lt;/h1&gt;&lt;p&gt;随机&lt;/p&gt;
-</summary>
+    <summary type="html">&lt;h2 id=&quot;因果≠相关&quot;&gt;&lt;a href=&quot;#因果≠相关&quot; class=&quot;headerlink&quot; title=&quot;因果≠相关&quot;&gt;&lt;/a&gt;因果≠相关&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;相关关系：相关关系是指两个变量在概率分布上的相似程度，相关关系本身不用于描述因果关系这种决定性指标。&lt;/</summary>
       
     
     
