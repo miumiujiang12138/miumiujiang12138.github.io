@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://example.com/assets/SSH%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.png">
 <meta property="og:image" content="http://example.com/assets/%E9%85%8D%E7%BD%AE%E5%A5%BD%E7%9A%84config.png">
 <meta property="article:published_time" content="2024-06-11T06:18:17.000Z">
-<meta property="article:modified_time" content="2024-06-11T10:48:02.564Z">
+<meta property="article:modified_time" content="2024-06-11T10:51:21.911Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="随笔">
 <meta name="twitter:card" content="summary">
@@ -183,8 +183,8 @@
 <p>在我尝试在一个开源项目的某个分支zhiyi（该分支在远程仓库upstream中）上新开一个自己的分支qianh进行工作时：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git checkout upstream/zhiyi <span class="comment"># 切换到upstream远程仓库里的zhiyi分支</span></span><br><span class="line">git pull upstream zhiyi <span class="comment">#将upstream仓库里的最新信息拉取到zhiyi分支</span></span><br><span class="line">git checkout -b qianh <span class="comment">#在zhiyi分支上新建一个本地分支qianh</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#这样就成功地在 zhiyi 分支的基础上创建了一个新的分支 qianh，并且qianh分支与zhiyi 分支上的信息同步</span></span><br></pre></td></tr></table></figure>
 <p>然而在，拉取upstream的代码时出现以下问题：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh <span class="literal">-T</span> git@github.com</span><br><span class="line">git@github.com: Permission denied (publickey).</span><br></pre></td></tr></table></figure>
-<p>显示<strong>ssh连接权限被拒绝</strong>，解决问题的步骤如下：<br>问题的本质是新建分支qianh与GitHub连接的问题，将ssh连接问题解决即可。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh <span class="literal">-T</span> git@github.com</span><br></pre></td></tr></table></figure>
+<p>然后出现这个报错：<strong><a href="mailto:&#103;&#105;&#x74;&#64;&#x67;&#x69;&#116;&#104;&#x75;&#98;&#x2e;&#99;&#111;&#109;">&#103;&#105;&#x74;&#64;&#x67;&#x69;&#116;&#104;&#x75;&#98;&#x2e;&#99;&#111;&#109;</a>: Permission denied (publickey)<strong>，这表示</strong>ssh连接权限被拒绝</strong>，解决问题的步骤如下：<br>问题的本质是新建分支qianh与GitHub连接的问题，将ssh连接问题解决即可。</p>
 <h2 id="1、在本地生成ssh密钥"><a href="#1、在本地生成ssh密钥" class="headerlink" title="1、在本地生成ssh密钥"></a>1、在本地生成ssh密钥</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh<span class="literal">-keygen</span> <span class="literal">-t</span> rsa <span class="literal">-b</span> <span class="number">4096</span> <span class="literal">-C</span> <span class="string">&quot;miumiujiang12138@gmail.com&quot;</span> <span class="comment"># 生成SSH密钥，包括公钥与私钥，这一步是在VScode的终端上运行</span></span><br></pre></td></tr></table></figure>
 <p>生成密钥后，查看公钥的内容，文件后缀名为.pub，我自己的公钥文件名为HQoooo0000.pub，cat一下，然后复制HQoooo0000.pub里的内容，去GitHub网页–设置–SSH与GPG公钥中新建SSH公钥，将复制的内容粘贴到对应的面板内，如图：<br><img src="/assets/SSH%E5%AF%86%E9%92%A5%E6%B7%BB%E5%8A%A0.png" alt="SSH添加密钥"></p>
 <h2 id="2、启动SSH代理并将私钥添加至SSH代理"><a href="#2、启动SSH代理并将私钥添加至SSH代理" class="headerlink" title="2、启动SSH代理并将私钥添加至SSH代理"></a>2、启动SSH代理并将私钥添加至SSH代理</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span> $(ssh-agent -s) <span class="comment"># 启动SSH代理，在git bash上运行</span></span><br><span class="line">ssh-add /d/GitSrc/causal-dmir/HQoooo0000  <span class="comment"># 将私钥添加到ssh代理，HQoooo0000是我的私钥文件名，在git bash上运行</span></span><br></pre></td></tr></table></figure>
