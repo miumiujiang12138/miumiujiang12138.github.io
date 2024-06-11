@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2024-06-05T10:04:09.211Z</updated>
+  <updated>2024-06-11T07:15:23.522Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,64 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>参与开源项目记录（持续更新中...）</title>
+    <link href="http://example.com/2024/06/11/%E5%8F%82%E4%B8%8E%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E8%AE%B0%E5%BD%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD-%EF%BC%89/"/>
+    <id>http://example.com/2024/06/11/%E5%8F%82%E4%B8%8E%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E8%AE%B0%E5%BD%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD-%EF%BC%89/</id>
+    <published>2024-06-11T06:51:30.000Z</published>
+    <updated>2024-06-11T07:15:23.522Z</updated>
+    
+    <content type="html"><![CDATA[<p>记录自己作为reviewer参与causaldmir-package的开发工作。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;记录自己作为reviewer参与causaldmir-package的开发工作。&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在VScode上管理自己hexo博客（解决VScode编辑文件权限问题）</title>
+    <link href="http://example.com/2024/06/11/%E5%9C%A8VScode%E4%B8%8A%E7%AE%A1%E7%90%86%E8%87%AA%E5%B7%B1hexo%E5%8D%9A%E5%AE%A2/"/>
+    <id>http://example.com/2024/06/11/%E5%9C%A8VScode%E4%B8%8A%E7%AE%A1%E7%90%86%E8%87%AA%E5%B7%B1hexo%E5%8D%9A%E5%AE%A2/</id>
+    <published>2024-06-11T06:24:35.000Z</published>
+    <updated>2024-06-11T07:18:04.056Z</updated>
+    
+    <content type="html"><![CDATA[<p>我的hexo博客是在Ubuntu上创建的虚拟机里的blog目录里管理的，包括文章的更新，修改以及推送到远端都是在Linux的终端操作的，但是每次在虚拟机里的终端操作都很麻烦，尤其是用vim编辑器编辑文章的时候，虚拟机的终端的页面调整光标位置要辅以快捷键，很不方便，如果是VScode连接远程虚拟机，在VScode上面编辑文章就可以手动调整光标位置，而且目录结构清晰，查看blog里面的其他文件也很方便，总之推荐使用VScode来管理自己的博客~</p><p>不过第一次使用VScode编辑文件会出现一个问题：编辑文件的权限问题，如图：<br><img src="/assets/VScode%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98.png" alt="问题图"></p><p>解决问题的办法是：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">chown</span> -R miumiujiang:miumiujiang /home/miumiujiang/blog/sourece/_posts/</span><br></pre></td></tr></table></figure><p>将miumiujiang替换成自己的虚拟机用户名即可，简单来说就是更改了&#x2F;home&#x2F;miumiujiang&#x2F;blog&#x2F;sourece&#x2F;_posts&#x2F;的权限。本来是root才有权限读写该文件，但是更改权限后miumiujiang也可以读写文件：<br><img src="/assets/%E6%9D%83%E9%99%90%E5%9B%BE.png" alt="权限图"><br>可以用ls命令检查一下文件所在目录的权限：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -l /home/miumiujiang/blog/source/_posts</span><br></pre></td></tr></table></figure><p>改权限后：<br><img src="/assets/%E6%9D%83%E9%99%90%E5%9B%BE2.png" alt="权限图"></p><p>这样就可以直接在VScode编辑页面编辑blog里的文件啦~<br><img src="/assets/%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3.png" alt="问题解决"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;我的hexo博客是在Ubuntu上创建的虚拟机里的blog目录里管理的，包括文章的更新，修改以及推送到远端都是在Linux的终端操作的，但是每次在虚拟机里的终端操作都很麻烦，尤其是用vim编辑器编辑文章的时候，虚拟机的终端的页面调整光标位置要辅以快捷键，很不方便，如果是VS</summary>
+      
+    
+    
+    
+    
+    <category term="随笔" scheme="http://example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于git的踩坑记录</title>
+    <link href="http://example.com/2024/06/11/%E5%85%B3%E4%BA%8Egit%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"/>
+    <id>http://example.com/2024/06/11/%E5%85%B3%E4%BA%8Egit%E7%9A%84%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</id>
+    <published>2024-06-11T06:18:17.000Z</published>
+    <updated>2024-06-11T06:18:17.334Z</updated>
+    
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>关于用生成模型（CRBM）对阿尔兹海默症患者病程进行个性化预测的文章汇报</title>
