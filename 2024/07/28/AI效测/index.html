@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Tag: Jupyter_notebook Pytorch | Hexo</title>
+  <title>AI药效预测夏令营笔记 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/tags/Jupyter-notebook-Pytorch/index.html">
+  <meta name="description" content="Task1:跑通baseline＋笔记baseline代码包括SiRNA的数据集和模型搭建的jupyter代码两部分。对于模型的代码部分，逻辑框架如下： 导入依赖库导入包括了文件操作、深度学习、数据处理、模型评估等必要的库。 创建基因组分词器类基因组需要转化成模型能处理的序列数据，将基因组数据每五个字符分成一个词，每次分两个词。 12345class GenomicTokenizer:    de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI药效预测夏令营笔记">
+<meta property="og:url" content="http://example.com/2024/07/28/AI%E6%95%88%E6%B5%8B/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Task1:跑通baseline＋笔记baseline代码包括SiRNA的数据集和模型搭建的jupyter代码两部分。对于模型的代码部分，逻辑框架如下： 导入依赖库导入包括了文件操作、深度学习、数据处理、模型评估等必要的库。 创建基因组分词器类基因组需要转化成模型能处理的序列数据，将基因组数据每五个字符分成一个词，每次分两个词。 12345class GenomicTokenizer:    de">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/assets/baseline%E6%A6%82%E5%86%B5.png">
+<meta property="article:published_time" content="2024-07-28T05:12:57.000Z">
+<meta property="article:modified_time" content="2024-07-28T05:16:58.795Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="随笔">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/baseline%E6%A6%82%E5%86%B5.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -150,60 +157,223 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-AI效测" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2024" class="archive-year">2024</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2024/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98/" class="archive-article-date">
-  	<time datetime="2024-02-22T16:45:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-02-23</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2024/02/23/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%AE%9E%E6%88%98/">深度学习实战</a>
+    <h1 class="article-title" itemprop="name">
+      AI药效预测夏令营笔记
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2024/07/28/AI%E6%95%88%E6%B5%8B/" class="archive-article-date">
+  	<time datetime="2024-07-28T05:12:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-07-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Task1-跑通baseline＋笔记"><a href="#Task1-跑通baseline＋笔记" class="headerlink" title="Task1:跑通baseline＋笔记"></a>Task1:跑通baseline＋笔记</h1><p><strong>baseline代码</strong>包括SiRNA的数据集和模型搭建的jupyter代码两部分。<br><img src="/assets/baseline%E6%A6%82%E5%86%B5.png" alt="baseline概况"><br>对于模型的代码部分，逻辑框架如下：</p>
+<h2 id="导入依赖库"><a href="#导入依赖库" class="headerlink" title="导入依赖库"></a>导入依赖库</h2><p>导入包括了文件操作、深度学习、数据处理、模型评估等必要的库。</p>
+<h2 id="创建基因组分词器类"><a href="#创建基因组分词器类" class="headerlink" title="创建基因组分词器类"></a>创建基因组分词器类</h2><p>基因组需要转化成模型能处理的序列数据，将基因组数据每五个字符分成一个词，每次分两个词。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GenomicTokenizer</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, ngram=<span class="number">5</span>, stride=<span class="number">2</span></span>):</span><br><span class="line">        <span class="comment"># 初始化分词器，设置n-gram长度和步幅</span></span><br><span class="line">        self.ngram = ngram</span><br><span class="line">        self.stride = stride</span><br></pre></td></tr></table></figure>
+<h2 id="创建基因组词汇表类"><a href="#创建基因组词汇表类" class="headerlink" title="创建基因组词汇表类"></a>创建基因组词汇表类</h2><p>去掉低于最小频率的分词和高于最大平频率的分词，对于词频处于二者中间的次予以保留，统计词频，并按照词频从高到底排序，最后的词汇表应该是这种形式：</p>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>词汇</th>
+<th>词频</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>分词A</td>
+<td>15</td>
+</tr>
+<tr>
+<td>2</td>
+<td>分词B</td>
+<td>12</td>
+</tr>
+<tr>
+<td>3</td>
+<td>分词C</td>
+<td>10</td>
+</tr>
+<tr>
+<td>4</td>
+<td>分词D</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<h2 id="siRNA数据集处理"><a href="#siRNA数据集处理" class="headerlink" title="siRNA数据集处理"></a>siRNA数据集处理</h2><p>首先要构建用于加载siRNA数据，并将序列数据转换为模型可以处理的格式的类。</p>
+<h2 id="构建RNN网络模型并训练"><a href="#构建RNN网络模型并训练" class="headerlink" title="构建RNN网络模型并训练"></a>构建RNN网络模型并训练</h2><p>先构建<strong>RNN网络模型类</strong>，再读数据（用siRNA数据集类处理），数据预处理（包括分词，将分词转化为词汇表）之后开始训练。<br>训练的流程包括（对于每次迭代）：<br>前向传导，反向传播计算梯度，梯度下降算法调参数，清空梯度，继续迭代前面的步骤直到损失函数的值最小（达到最优）。</p>
+<h2 id="在测试集上测试"><a href="#在测试集上测试" class="headerlink" title="在测试集上测试"></a>在测试集上测试</h2><p>首先要定义<strong>评估指标的计算函数</strong>和<strong>模型评估函数</strong>，然后在测试集上测试模型性能。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/zhifubao.png">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/weixin.png">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Jupyter_notebook Pytorch</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2024/07/28/AI%E6%95%88%E6%B5%8B/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2024/06/11/%E5%8F%82%E4%B8%8E%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E8%AE%B0%E5%BD%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0%E4%B8%AD-%EF%BC%89/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">参与开源项目记录（持续更新中...）</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+  <div id="SOHUCS" sid="AI效测" ></div> 
+<script charset="utf-8" type="text/javascript" src="//changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+    window.changyan.api.config({
+        appid: "cysX3aGWt",
+        conf: "prod_1dcda447175aada96edcdb7e412338fa"
+    });
+</script>
+</script>
+  
+
+  
+
+  
 
 
           </div>
@@ -226,9 +396,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
