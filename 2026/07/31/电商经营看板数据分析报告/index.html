@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>电商用户行为与经营异动数据分析报告 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1. 项目背景1.1 数据来源本项目使用 Kaggle 公开数据集 eCommerce Events History in Cosmetics Shop。数据集记录了一家化妆品电商网站在 2019 年 10 月至 2020 年 2 月期间产生的用户行为数据，按月份存储为 5 个 CSV 文件，整体包含约 2000 万条行为事件。 数据以单次“用户—商品交互事件”为基本记录单位，主要字段包括事件发生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="电商用户行为与经营异动数据分析报告">
+<meta property="og:url" content="http://example.com/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1. 项目背景1.1 数据来源本项目使用 Kaggle 公开数据集 eCommerce Events History in Cosmetics Shop。数据集记录了一家化妆品电商网站在 2019 年 10 月至 2020 年 2 月期间产生的用户行为数据，按月份存储为 5 个 CSV 文件，整体包含约 2000 万条行为事件。 数据以单次“用户—商品交互事件”为基本记录单位，主要字段包括事件发生">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/ecommerce-dashboard-report/business_overview.png">
+<meta property="og:image" content="http://example.com/images/ecommerce-dashboard-report/user-behavior-funnel.png">
+<meta property="og:image" content="http://example.com/images/ecommerce-dashboard-report/business-anomaly-analysis.png">
+<meta property="og:image" content="http://example.com/images/ecommerce-dashboard-report/brand-category-analysis.png">
+<meta property="article:published_time" content="2026-07-31T05:22:00.000Z">
+<meta property="article:modified_time" content="2026-07-31T05:59:24.651Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="电商">
+<meta property="article:tag" content="数据分析">
+<meta property="article:tag" content="Power BI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/ecommerce-dashboard-report/business_overview.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-电商经营看板数据分析报告" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" class="article-date">
+  <time class="dt-published" datetime="2026-07-31T05:22:00.000Z" itemprop="datePublished">2026-07-31</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">数据分析</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      电商用户行为与经营异动数据分析报告
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="1-项目背景"><a href="#1-项目背景" class="headerlink" title="1. 项目背景"></a>1. 项目背景</h1><h2 id="1-1-数据来源"><a href="#1-1-数据来源" class="headerlink" title="1.1 数据来源"></a>1.1 数据来源</h2><p>本项目使用 Kaggle 公开数据集 <a target="_blank" rel="noopener" href="https://www.kaggle.com/datasets/mkechinov/ecommerce-events-history-in-cosmetics-shop">eCommerce Events History in Cosmetics Shop</a>。数据集记录了一家化妆品电商网站在 2019 年 10 月至 2020 年 2 月期间产生的用户行为数据，按月份存储为 5 个 CSV 文件，整体包含约 2000 万条行为事件。</p>
+<p>数据以单次“用户—商品交互事件”为基本记录单位，主要字段包括事件发生时间、事件类型、商品 ID、品类 ID、品类编码、品牌、商品价格、用户 ID 和会话 ID。事件类型主要包括：</p>
+<ul>
+<li><code>view</code>：浏览商品；</li>
+<li><code>cart</code>：将商品加入购物车；</li>
+<li><code>remove_from_cart</code>：将商品移出购物车；</li>
+<li><code>purchase</code>：产生购买行为。</li>
+</ul>
+<p>这些字段能够还原用户从浏览、加购、移除购物车到购买的主要行为路径，并支持按日期、用户、会话、品牌和品类构建经营指标。需要注意的是，原始数据缺少完整订单编号、商品数量、退款状态、营销渠道及库存变化等信息，因此本项目中的 GMV、漏斗转化和购买会话价值均按照行为事件口径计算，不直接等同于企业财务收入或完整订单指标。</p>
+<h2 id="1-2-项目目标"><a href="#1-2-项目目标" class="headerlink" title="1.2 项目目标"></a>1.2 项目目标</h2><p>原始行为事件数据具有数据量大、记录粒度细和字段缺失较多等特点，无法直接用于经营判断。本项目围绕电商日常经营监控，将事件明细加工为可供业务分析的指标体系，重点分析经营规模、用户行为漏斗、日级异常、异常事件影响以及品牌和品类表现。</p>
+<p>项目首先使用 Spark 对多月原始数据进行字段转换、异常值过滤、去重和标准化处理，并将清洗结果存储为 Parquet 数据集；随后按日期、品牌、品类和新老用户构建 GMV、用户规模、会话规模、漏斗转化率和购物车风险等指标。在此基础上，使用历史观测日构建滚动基线，识别日级异常，并将连续异常日期合并为异常事件，进一步计算事件累计 GMV 缺口以及指标、品牌和品类贡献。</p>
+<p>最终，处理结果被整理为适用于 Power BI 的维度表和事实表，并构建经营总览、用户行为漏斗、经营异动分析及品牌与品类分析四页看板，形成从经营表现监控、问题定位到运营建议和效果验证的完整分析流程。</p>
+<p>四页看板分别承担以下职责：</p>
+<table>
+<thead>
+<tr>
+<th>看板页面</th>
+<th>核心职责</th>
+<th>回答的业务问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>经营总览</td>
+<td>展示经营规模、效率和趋势</td>
+<td>当前整体经营表现如何？</td>
+</tr>
+<tr>
+<td>用户行为漏斗</td>
+<td>展示浏览、加购、购买和购物车移除</td>
+<td>用户主要流失在哪个环节？</td>
+</tr>
+<tr>
+<td>经营异动分析</td>
+<td>展示异常日期、异常事件、GMV 缺口和因子归因</td>
+<td>哪些日期异常？影响多大？可能由什么驱动？</td>
+</tr>
+<tr>
+<td>品牌与品类分析</td>
+<td>展示头部维度、流量—转化—GMV 分布和事件负向贡献</td>
+<td>哪些品牌或品类贡献经营结果，哪些维度拖累异常？</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="2-核心结论摘要"><a href="#2-核心结论摘要" class="headerlink" title="2. 核心结论摘要"></a>2. 核心结论摘要</h1><h2 id="2-1-当前经营规模总体稳定，但尚未形成持续增长趋势"><a href="#2-1-当前经营规模总体稳定，但尚未形成持续增长趋势" class="headerlink" title="2.1 当前经营规模总体稳定，但尚未形成持续增长趋势"></a>2.1 当前经营规模总体稳定，但尚未形成持续增长趋势</h2><p>在 2019-10-01 至 2020-02-29 的 152 个观测日内：</p>
+<table>
+<thead>
+<tr>
+<th>核心指标</th>
+<th align="right">看板结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>累计 GMV</td>
+<td align="right">6.35 百万</td>
+</tr>
+<tr>
+<td>日均 GMV</td>
+<td align="right">41.76 千</td>
+</tr>
+<tr>
+<td>日均活跃用户</td>
+<td align="right">18.45 千</td>
+</tr>
+<tr>
+<td>浏览到购买率</td>
+<td align="right">5.78%</td>
+</tr>
+<tr>
+<td>购买会话金额代理</td>
+<td align="right">40.40</td>
+</tr>
+</tbody></table>
+<p>整体 GMV 多数时间围绕近 7 日平均水平波动，说明基础经营水平相对稳定。但 2019 年 11 月至 12 月初出现多次短期峰值，2019 年 12 月末至 2020 年 1 月初出现明显低谷，2020 年 1 月末再次出现短期峰值。</p>
+<p>这些变化更像阶段性波动，而不是持续单向增长。</p>
+<h2 id="2-2-漏斗的主要瓶颈是“加购后未购买”"><a href="#2-2-漏斗的主要瓶颈是“加购后未购买”" class="headerlink" title="2.2 漏斗的主要瓶颈是“加购后未购买”"></a>2.2 漏斗的主要瓶颈是“加购后未购买”</h2><p>当前漏斗结果为：</p>
+<table>
+<thead>
+<tr>
+<th>漏斗指标</th>
+<th align="right">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>浏览到加购率</td>
+<td align="right">27.55%</td>
+</tr>
+<tr>
+<td>加购到购买率</td>
+<td align="right">20.98%</td>
+</tr>
+<tr>
+<td>浏览到购买率</td>
+<td align="right">5.78%</td>
+</tr>
+<tr>
+<td>购物车移除率</td>
+<td align="right">52.87%</td>
+</tr>
+</tbody></table>
+<p>漏斗关系基本满足：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -0.127ex;" xmlns="http://www.w3.org/2000/svg" width="25.767ex" height="1.824ex" role="img" focusable="false" viewBox="0 -750 11389 806"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mn"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path data-c="37" d="M55 458Q56 460 72 567L88 674Q88 676 108 676H128V672Q128 662 143 655T195 646T364 644H485V605L417 512Q408 500 387 472T360 435T339 403T319 367T305 330T292 284T284 230T278 162T275 80Q275 66 275 52T274 28V19Q270 2 255 -10T221 -22Q210 -22 200 -19T179 0T168 40Q168 198 265 368Q285 400 349 489L395 552H302Q128 552 119 546Q113 543 108 522T98 479L95 458V455H55V458Z" transform="translate(500,0)"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(1000,0)"></path><path data-c="35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z" transform="translate(1278,0)"></path><path data-c="35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z" transform="translate(1778,0)"></path></g><g data-mml-node="mi" transform="translate(2278,0)"><path data-c="25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></g><g data-mml-node="mo" transform="translate(3333.2,0)"><path data-c="D7" d="M630 29Q630 9 609 9Q604 9 587 25T493 118L389 222L284 117Q178 13 175 11Q171 9 168 9Q160 9 154 15T147 29Q147 36 161 51T255 146L359 250L255 354Q174 435 161 449T147 471Q147 480 153 485T168 490Q173 490 175 489Q178 487 284 383L389 278L493 382Q570 459 587 475T609 491Q630 491 630 471Q630 464 620 453T522 355L418 250L522 145Q606 61 618 48T630 29Z"></path></g><g data-mml-node="mn" transform="translate(4333.4,0)"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path><path data-c="30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z" transform="translate(500,0)"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(1000,0)"></path><path data-c="39" d="M352 287Q304 211 232 211Q154 211 104 270T44 396Q42 412 42 436V444Q42 537 111 606Q171 666 243 666Q245 666 249 666T257 665H261Q273 665 286 663T323 651T370 619T413 560Q456 472 456 334Q456 194 396 97Q361 41 312 10T208 -22Q147 -22 108 7T68 93T121 149Q143 149 158 135T173 96Q173 78 164 65T148 49T135 44L131 43Q131 41 138 37T164 27T206 22H212Q272 22 313 86Q352 142 352 280V287ZM244 248Q292 248 321 297T351 430Q351 508 343 542Q341 552 337 562T323 588T293 615T246 625Q208 625 181 598Q160 576 154 546T147 441Q147 358 152 329T172 282Q197 248 244 248Z" transform="translate(1278,0)"></path><path data-c="38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z" transform="translate(1778,0)"></path></g><g data-mml-node="mi" transform="translate(6611.4,0)"><path data-c="25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></g><g data-mml-node="mo" transform="translate(7722.2,0)"><path data-c="2248" d="M55 319Q55 360 72 393T114 444T163 472T205 482Q207 482 213 482T223 483Q262 483 296 468T393 413L443 381Q502 346 553 346Q609 346 649 375T694 454Q694 465 698 474T708 483Q722 483 722 452Q722 386 675 338T555 289Q514 289 468 310T388 357T308 404T224 426Q164 426 125 393T83 318Q81 289 69 289Q55 289 55 319ZM55 85Q55 126 72 159T114 210T163 238T205 248Q207 248 213 248T223 249Q262 249 296 234T393 179L443 147Q502 112 553 112Q609 112 649 141T694 220Q694 249 708 249T722 217Q722 153 675 104T555 55Q514 55 468 76T388 123T308 170T224 192Q164 192 125 159T83 84Q80 55 69 55Q55 55 55 85Z"></path></g><g data-mml-node="mn" transform="translate(8778,0)"><path data-c="35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path data-c="2E" d="M78 60Q78 84 95 102T138 120Q162 120 180 104T199 61Q199 36 182 18T139 0T96 17T78 60Z" transform="translate(500,0)"></path><path data-c="37" d="M55 458Q56 460 72 567L88 674Q88 676 108 676H128V672Q128 662 143 655T195 646T364 644H485V605L417 512Q408 500 387 472T360 435T339 403T319 367T305 330T292 284T284 230T278 162T275 80Q275 66 275 52T274 28V19Q270 2 255 -10T221 -22Q210 -22 200 -19T179 0T168 40Q168 198 265 368Q285 400 349 489L395 552H302Q128 552 119 546Q113 543 108 522T98 479L95 458V455H55V458Z" transform="translate(778,0)"></path><path data-c="38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z" transform="translate(1278,0)"></path></g><g data-mml-node="mi" transform="translate(10556,0)"><path data-c="25" d="M465 605Q428 605 394 614T340 632T319 641Q332 608 332 548Q332 458 293 403T202 347Q145 347 101 402T56 548Q56 637 101 693T202 750Q241 750 272 719Q359 642 464 642Q580 642 650 732Q662 748 668 749Q670 750 673 750Q682 750 688 743T693 726Q178 -47 170 -52Q166 -56 160 -56Q147 -56 142 -45Q137 -36 142 -27Q143 -24 363 304Q469 462 525 546T581 630Q528 605 465 605ZM207 385Q235 385 263 427T292 548Q292 617 267 664T200 712Q193 712 186 709T167 698T147 668T134 615Q132 595 132 548V527Q132 436 165 403Q183 385 203 385H207ZM500 146Q500 234 544 290T647 347Q699 347 737 292T776 146T737 0T646 -56Q590 -56 545 0T500 146ZM651 -18Q679 -18 707 24T736 146Q736 215 711 262T644 309Q637 309 630 306T611 295T591 265T578 212Q577 200 577 146V124Q577 -18 647 -18H651Z"></path></g></g></g></svg></mjx-container></p>
+<p>用业务语言解释：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">100 个日级浏览用户计数</span><br><span class="line">        ↓</span><br><span class="line">约 27.55 个进入加购</span><br><span class="line">        ↓</span><br><span class="line">约 5.78 个完成购买</span><br></pre></td></tr></table></figure>
+
+<p>因此：</p>
+<ul>
+<li>浏览到加购阶段约有 72.45% 未进入加购；</li>
+<li>已加购计数中约有 79.02% 未进一步转化为购买；</li>
+<li>加购后未购买是更值得优先排查的环节；</li>
+<li>购物车移除事件相对加购事件达到 52.87%，进一步表明购物车阶段存在较强的商品放弃或反复选择信号。</li>
+</ul>
+<h2 id="2-3-异常并非少量偶发波动，需要建立常态化监控"><a href="#2-3-异常并非少量偶发波动，需要建立常态化监控" class="headerlink" title="2.3 异常并非少量偶发波动，需要建立常态化监控"></a>2.3 异常并非少量偶发波动，需要建立常态化监控</h2><p>在 152 个观测日内：</p>
+<table>
+<thead>
+<tr>
+<th>异常指标</th>
+<th align="right">异常日期数</th>
+<th align="right">占观测日比例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GMV 异常日期</td>
+<td align="right">49</td>
+<td align="right">32.24%</td>
+</tr>
+<tr>
+<td>转化/购物车异常日期</td>
+<td align="right">60</td>
+<td align="right">39.47%</td>
+</tr>
+</tbody></table>
+<p>需要注意，异常可能包含正向和负向偏离，不能把全部异常日期理解为经营下滑。但较高的异常覆盖比例说明：</p>
+<ul>
+<li>业务波动较频繁；</li>
+<li>单纯查看月度均值容易掩盖日级问题；</li>
+<li>应建立基于日级滚动基线的持续监控与事件分级机制；</li>
+<li>需要区分真实经营异常、活动峰值和数据完整性问题。</li>
+</ul>
+<h2 id="2-4-典型异常事件存在明确的负向-GMV-缺口"><a href="#2-4-典型异常事件存在明确的负向-GMV-缺口" class="headerlink" title="2.4 典型异常事件存在明确的负向 GMV 缺口"></a>2.4 典型异常事件存在明确的负向 GMV 缺口</h2><p>当前看板选中的事件为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">事件1：2019-10-04 至 2019-10-06</span><br></pre></td></tr></table></figure>
+
+<p>该事件持续 3 天，事件累计 GMV 缺口为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-34.40 千</span><br></pre></td></tr></table></figure>
+
+<p>业务解释：</p>
+<blockquote>
+<p>事件1期间实际 GMV 累计低于滚动基线约 3.44 万。</p>
+</blockquote>
+<p>该结果属于相对基线偏离，不是确认财务损失。因子归因和自动建议进一步将问题指向：</p>
+<ul>
+<li>商品吸引力或加购环节异常；</li>
+<li>购物车移除增加；</li>
+<li>重点品牌下降；</li>
+<li>重点品类下降；</li>
+<li>用户规模及购买会话相关因子拖累。</li>
+</ul>
+<p>这些结果用于确定排查优先级，不能直接视为已确认因果关系。</p>
+<h2 id="2-5-品牌和品类主数据缺失已影响经营归因"><a href="#2-5-品牌和品类主数据缺失已影响经营归因" class="headerlink" title="2.5 品牌和品类主数据缺失已影响经营归因"></a>2.5 品牌和品类主数据缺失已影响经营归因</h2><p>品牌 GMV Top10 和事件负向贡献中，“品牌缺失/未知”均占据显著位置；大量品类只能显示数字 ID。</p>
+<p>这说明：</p>
+<ul>
+<li>unknown 并不是一个真实业务品牌；</li>
+<li>数字品类 ID 虽能用于计算，但不能直接支持业务执行；</li>
+<li>品牌和品类映射缺失会掩盖真正的责任对象；</li>
+<li>数据治理应被纳入经营改进计划，而不能只作为报表美观问题处理。</li>
+</ul>
+<hr>
+<h1 id="3-经营总览分析"><a href="#3-经营总览分析" class="headerlink" title="3. 经营总览分析"></a>3. 经营总览分析</h1><p><img src="/images/ecommerce-dashboard-report/business_overview.png" alt="经营总览看板"></p>
+<p>经营总览页通过日期切片器统一控制分析区间，当前覆盖 2019 年 10 月 1 日至 2020 年 2 月 29 日。核心指标卡显示，该期间累计 GMV 为 6.35 百万，日均 GMV 为 41.76 千，日均活跃用户为 18.45 千，浏览到购买率为 5.78%，平均每个购买会话贡献 40.40 的 GMV。每日 GMV 与 7 日移动平均趋势显示，经营结果大部分时间围绕近期平均水平波动，2019 年 11 月至 12 月初出现多次短期峰值，2019 年 12 月末至 2020 年 1 月初出现明显低谷，随后逐步恢复。活跃用户与购买用户趋势用于判断 GMV 波动是否伴随用户规模变化；新用户与回访用户 GMV 堆积柱状图则进一步展示每天 GMV 的用户结构，帮助识别经营峰值主要由新增用户还是回访用户贡献。</p>
+<p>综合来看，分析期内平台具有相对稳定的日常经营基础，但 GMV 仍存在明显的阶段性波动，尚未表现出持续单向增长趋势。经营总览能够定位波动发生的时间，并初步判断用户规模和用户类型结构是否同步变化，但不能直接说明流量进入购买环节后具体在哪一步流失。为进一步解释浏览流量为何最终只有 5.78% 转化为购买，下一部分将从浏览、加购、购买和购物车移除四个环节展开用户行为漏斗分析。</p>
+<hr>
+<h1 id="4-用户行为漏斗分析"><a href="#4-用户行为漏斗分析" class="headerlink" title="4. 用户行为漏斗分析"></a>4. 用户行为漏斗分析</h1><p><img src="/images/ecommerce-dashboard-report/user-behavior-funnel.png" alt="用户行为漏斗看板"></p>
+<p>日期切片器统一控制分析区间，当前覆盖 2019 年 10 月 1 日至 2020 年 2 月 29 日。核心指标卡显示，浏览到加购率为 27.55%，加购到购买率为 20.98%，最终浏览到购买率为 5.78%，即每 100 个日级浏览用户计数中约有 28 个进入加购，但最终只有约 6 个形成购买。购物车移除率为 52.87%，表示每 100 次加购事件约对应 52.87 次移除事件。该指标反映购物车阶段存在较强的商品放弃或反复选择信号，但由于它采用事件口径，不能直接解释为 52.87% 的用户放弃购买。</p>
+<p>“漏斗转化率与移除率趋势”用于判断整体指标是否稳定：</p>
+<ul>
+<li>浏览到加购率下降：商品吸引力、流量质量或详情页承接可能变弱；</li>
+<li>加购到购买率下降：库存、价格、优惠、配送、结算和支付环节更值得排查；</li>
+<li>浏览到购买率下降：需要结合前两个环节判断问题发生位置；</li>
+<li>移除率上升：购物车风险增强。</li>
+</ul>
+<p>“各漏斗阶段用户趋势”用于判断变化来自用户规模还是转化效率：</p>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>更可能的排查方向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>浏览、加购和购买同时下降</td>
+<td>流量减少、渠道停投、数据中断</td>
+</tr>
+<tr>
+<td>浏览稳定、加购下降</td>
+<td>商品吸引力、详情页、推荐质量</td>
+</tr>
+<tr>
+<td>浏览和加购稳定、购买下降</td>
+<td>库存、配送、支付、结算问题</td>
+</tr>
+<tr>
+<td>浏览增长、购买不增长</td>
+<td>新增流量质量较低或承接不足</td>
+</tr>
+<tr>
+<td>三个阶段同步增长</td>
+<td>流量增长能够有效转化</td>
+</tr>
+</tbody></table>
+<p>异常日历按日期和指标标记异常状态，红色单元格表示该指标在对应日期偏离滚动基线，底部总计表示当天同时异常的漏斗指标数量，可用于快速识别需要优先排查的日期。</p>
+<p>当前漏斗的主要问题集中在加购后的购买转化环节。虽然约 27.55% 的浏览用户计数进入了购物车，但其中只有 20.98% 进一步形成购买，同时购物车移除事件比例达到 52.87%，说明商品进入购物车后仍存在明显流失。漏斗页能够定位问题发生在哪个环节，并通过趋势和异常日历识别问题出现的时间，但仍不能直接确定异常由数据中断、用户规模变化、商品吸引力、库存、价格还是支付流程导致。下一部分将进入经营异动分析，把异常日期合并为事件，进一步评估 GMV 偏离规模并拆解主要影响因素。</p>
+<hr>
+<h1 id="5-经营异动分析"><a href="#5-经营异动分析" class="headerlink" title="5. 经营异动分析"></a>5. 经营异动分析</h1><p><img src="/images/ecommerce-dashboard-report/business-anomaly-analysis.png" alt="经营异动分析看板"></p>
+<h2 id="5-1-异常事件识别、影响评估与问题定位"><a href="#5-1-异常事件识别、影响评估与问题定位" class="headerlink" title="5.1 异常事件识别、影响评估与问题定位"></a>5.1 异常事件识别、影响评估与问题定位</h2><p>经营异动分析首先区分“异常日期”和“异常事件”。异常日期是指某一日的 GMV、用户规模、转化率或购物车指标偏离近期正常水平；异常事件则是在日期排序后，将连续异常日期合并形成的分析单元。之所以需要从异常日期进一步构造异常事件，是因为同一经营问题可能持续多天，如果逐日分别分析，会重复计算影响、重复生成归因结果，也不利于业务方判断问题的持续时间和整体影响。将连续异常日期合并后，可以在事件层面统一评估累计 GMV 偏离、主要影响因素及处理优先级；没有相邻异常日期的单日异常仍会作为独立事件保留，用于识别短期经营冲击或数据质量问题。</p>
+<p>页面左上角的日期切片器控制整体异常观察范围，当前覆盖 2019 年 10 月 1 日至 2020 年 2 月 29 日。在该范围内，共识别出 49 个 GMV 异常日期和 60 个转化或购物车指标异常日期。这里统计的是去重日期数，同一天即使有多个转化指标同时异常，也只计为一个异常日期。需要注意，异常表示指标偏离滚动基线，既可能是负向下降，也可能是促销活动带来的正向峰值，因此不能将全部异常日期直接理解为经营下滑。</p>
+<p>“GMV 实际值与滚动基线”趋势图用于比较每日实际 GMV 与近期正常经营水平。当前分析以目标日前最近 7 个观测日构建滚动基线，可近似表示为：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -2.819ex;" xmlns="http://www.w3.org/2000/svg" width="26.863ex" height="6.728ex" role="img" focusable="false" viewBox="0 -1728 11873.5 2973.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D435" d="M231 637Q204 637 199 638T194 649Q194 676 205 682Q206 683 335 683Q594 683 608 681Q671 671 713 636T756 544Q756 480 698 429T565 360L555 357Q619 348 660 311T702 219Q702 146 630 78T453 1Q446 0 242 0Q42 0 39 2Q35 5 35 10Q35 17 37 24Q42 43 47 45Q51 46 62 46H68Q95 46 128 49Q142 52 147 61Q150 65 219 339T288 628Q288 635 231 637ZM649 544Q649 574 634 600T585 634Q578 636 493 637Q473 637 451 637T416 636H403Q388 635 384 626Q382 622 352 506Q352 503 351 500L320 374H401Q482 374 494 376Q554 386 601 434T649 544ZM595 229Q595 273 572 302T512 336Q506 337 429 337Q311 337 310 336Q310 334 293 263T258 122L240 52Q240 48 252 48T333 46Q422 46 429 47Q491 54 543 105T595 229Z"></path></g><g data-mml-node="mi" transform="translate(759,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(1288,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(1757,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(2223,0)"><path data-c="1D459" d="M117 59Q117 26 142 26Q179 26 205 131Q211 151 215 152Q217 153 225 153H229Q238 153 241 153T246 151T248 144Q247 138 245 128T234 90T214 43T183 6T137 -11Q101 -11 70 11T38 85Q38 97 39 102L104 360Q167 615 167 623Q167 626 166 628T162 632T157 634T149 635T141 636T132 637T122 637Q112 637 109 637T101 638T95 641T94 647Q94 649 96 661Q101 680 107 682T179 688Q194 689 213 690T243 693T254 694Q266 694 266 686Q266 675 193 386T118 83Q118 81 118 75T117 65V59Z"></path></g><g data-mml-node="mi" transform="translate(2521,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(2866,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="msub" transform="translate(3466,0)"><g data-mml-node="mi"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(499,-150) scale(0.707)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g><g data-mml-node="mo" transform="translate(4548,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mfrac" transform="translate(5603.8,0)"><g data-mml-node="mn" transform="translate(220,676)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g><g data-mml-node="mn" transform="translate(220,-686)"><path data-c="37" d="M55 458Q56 460 72 567L88 674Q88 676 108 676H128V672Q128 662 143 655T195 646T364 644H485V605L417 512Q408 500 387 472T360 435T339 403T319 367T305 330T292 284T284 230T278 162T275 80Q275 66 275 52T274 28V19Q270 2 255 -10T221 -22Q210 -22 200 -19T179 0T168 40Q168 198 265 368Q285 400 349 489L395 552H302Q128 552 119 546Q113 543 108 522T98 479L95 458V455H55V458Z"></path></g><rect width="700" height="60" x="120" y="220"></rect></g><g data-mml-node="munderover" transform="translate(6710.5,0)"><g data-mml-node="mo"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(148.2,-1087.9) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mo" transform="translate(345,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="mn" transform="translate(1123,0)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"></path></g></g><g data-mml-node="TeXAtom" transform="translate(545.2,1150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><path data-c="37" d="M55 458Q56 460 72 567L88 674Q88 676 108 676H128V672Q128 662 143 655T195 646T364 644H485V605L417 512Q408 500 387 472T360 435T339 403T319 367T305 330T292 284T284 230T278 162T275 80Q275 66 275 52T274 28V19Q270 2 255 -10T221 -22Q210 -22 200 -19T179 0T168 40Q168 198 265 368Q285 400 349 489L395 552H302Q128 552 119 546Q113 543 108 522T98 479L95 458V455H55V458Z"></path></g></g></g><g data-mml-node="mi" transform="translate(8321.2,0)"><path data-c="1D43A" d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q492 659 471 656T418 643T357 615T294 567T236 496T189 394T158 260Q156 242 156 221Q156 173 170 136T206 79T256 45T308 28T353 24Q407 24 452 47T514 106Q517 114 529 161T541 214Q541 222 528 224T468 227H431Q425 233 425 235T427 254Q431 267 437 273H454Q494 271 594 271Q634 271 659 271T695 272T707 272Q721 272 721 263Q721 261 719 249Q714 230 709 228Q706 227 694 227Q674 227 653 224Q646 221 643 215T629 164Q620 131 614 108Q589 6 586 3Q584 1 581 1Q571 1 553 21T530 52Q530 53 528 52T522 47Q448 -22 322 -22Q201 -22 126 55T50 252Z"></path></g><g data-mml-node="mi" transform="translate(9107.2,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="msub" transform="translate(10158.2,0)"><g data-mml-node="mi"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g><g data-mml-node="TeXAtom" transform="translate(616,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mo" transform="translate(361,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(1139,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></g></g></svg></mjx-container></p>
+<p>其中，<mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.357ex;" xmlns="http://www.w3.org/2000/svg" width="9.661ex" height="1.927ex" role="img" focusable="false" viewBox="0 -694 4270.3 851.8"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D435" d="M231 637Q204 637 199 638T194 649Q194 676 205 682Q206 683 335 683Q594 683 608 681Q671 671 713 636T756 544Q756 480 698 429T565 360L555 357Q619 348 660 311T702 219Q702 146 630 78T453 1Q446 0 242 0Q42 0 39 2Q35 5 35 10Q35 17 37 24Q42 43 47 45Q51 46 62 46H68Q95 46 128 49Q142 52 147 61Q150 65 219 339T288 628Q288 635 231 637ZM649 544Q649 574 634 600T585 634Q578 636 493 637Q473 637 451 637T416 636H403Q388 635 384 626Q382 622 352 506Q352 503 351 500L320 374H401Q482 374 494 376Q554 386 601 434T649 544ZM595 229Q595 273 572 302T512 336Q506 337 429 337Q311 337 310 336Q310 334 293 263T258 122L240 52Q240 48 252 48T333 46Q422 46 429 47Q491 54 543 105T595 229Z"></path></g><g data-mml-node="mi" transform="translate(759,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(1288,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(1757,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(2223,0)"><path data-c="1D459" d="M117 59Q117 26 142 26Q179 26 205 131Q211 151 215 152Q217 153 225 153H229Q238 153 241 153T246 151T248 144Q247 138 245 128T234 90T214 43T183 6T137 -11Q101 -11 70 11T38 85Q38 97 39 102L104 360Q167 615 167 623Q167 626 166 628T162 632T157 634T149 635T141 636T132 637T122 637Q112 637 109 637T101 638T95 641T94 647Q94 649 96 661Q101 680 107 682T179 688Q194 689 213 690T243 693T254 694Q266 694 266 686Q266 675 193 386T118 83Q118 81 118 75T117 65V59Z"></path></g><g data-mml-node="mi" transform="translate(2521,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(2866,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="msub" transform="translate(3466,0)"><g data-mml-node="mi"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(499,-150) scale(0.707)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g></g></g></svg></mjx-container> 表示目标日期的滚动基线，<mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.471ex;" xmlns="http://www.w3.org/2000/svg" width="8.037ex" height="2.066ex" role="img" focusable="false" viewBox="0 -705 3552.3 913"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D43A" d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q492 659 471 656T418 643T357 615T294 567T236 496T189 394T158 260Q156 242 156 221Q156 173 170 136T206 79T256 45T308 28T353 24Q407 24 452 47T514 106Q517 114 529 161T541 214Q541 222 528 224T468 227H431Q425 233 425 235T427 254Q431 267 437 273H454Q494 271 594 271Q634 271 659 271T695 272T707 272Q721 272 721 263Q721 261 719 249Q714 230 709 228Q706 227 694 227Q674 227 653 224Q646 221 643 215T629 164Q620 131 614 108Q589 6 586 3Q584 1 581 1Q571 1 553 21T530 52Q530 53 528 52T522 47Q448 -22 322 -22Q201 -22 126 55T50 252Z"></path></g><g data-mml-node="mi" transform="translate(786,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="msub" transform="translate(1837,0)"><g data-mml-node="mi"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g><g data-mml-node="TeXAtom" transform="translate(616,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mo" transform="translate(361,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(1139,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></g></g></svg></mjx-container> 表示此前第 <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="0.781ex" height="1.52ex" role="img" focusable="false" viewBox="0 -661 345 672"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g></g></g></svg></mjx-container> 个观测日的实际 GMV。实际值接近基线，说明当天经营结果与近期水平基本一致；实际值明显低于基线，表示当天出现负向偏离；实际值明显高于基线，则可能对应活动峰值、流量增长或高价值商品集中成交。滚动基线只是统计参照，不是预算目标或严格反事实，因此后续计算的 GMV 缺口只能解释为“相对近期经营水平的偏离”，不能直接等同于财务确认损失。</p>
+<p>事件切片器用于从全部异常事件中选择一个具体事件进行下钻。当前选中的是“事件1：2019-10-04 至 2019-10-06”，该事件由连续 3 个异常日期组成，因此属于持续性异常事件。“当前选中事件数”为 1，表示页面当前只保留事件1的事件级分析结果，并不代表整个观察期只有一个异常事件。</p>
+<p>事件1的累计 GMV 缺口为 -34.40 千，其计算逻辑为：</p>
+<p><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -2.796ex;" xmlns="http://www.w3.org/2000/svg" width="59.838ex" height="4.946ex" role="img" focusable="false" viewBox="0 -950 26448.6 2186"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D438" d="M492 213Q472 213 472 226Q472 230 477 250T482 285Q482 316 461 323T364 330H312Q311 328 277 192T243 52Q243 48 254 48T334 46Q428 46 458 48T518 61Q567 77 599 117T670 248Q680 270 683 272Q690 274 698 274Q718 274 718 261Q613 7 608 2Q605 0 322 0H133Q31 0 31 11Q31 13 34 25Q38 41 42 43T65 46Q92 46 125 49Q139 52 144 61Q146 66 215 342T285 622Q285 629 281 629Q273 632 228 634H197Q191 640 191 642T193 659Q197 676 203 680H757Q764 676 764 669Q764 664 751 557T737 447Q735 440 717 440H705Q698 445 698 453L701 476Q704 500 704 528Q704 558 697 578T678 609T643 625T596 632T532 634H485Q397 633 392 631Q388 629 386 622Q385 619 355 499T324 377Q347 376 372 376H398Q464 376 489 391T534 472Q538 488 540 490T557 493Q562 493 565 493T570 492T572 491T574 487T577 483L544 351Q511 218 508 216Q505 213 492 213Z"></path></g><g data-mml-node="mi" transform="translate(764,0)"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mi" transform="translate(1249,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(1715,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(2315,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mtext" transform="translate(2676,0)"><path data-c="A0" d=""></path></g><g data-mml-node="mi" transform="translate(2926,0)"><path data-c="1D43A" d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q492 659 471 656T418 643T357 615T294 567T236 496T189 394T158 260Q156 242 156 221Q156 173 170 136T206 79T256 45T308 28T353 24Q407 24 452 47T514 106Q517 114 529 161T541 214Q541 222 528 224T468 227H431Q425 233 425 235T427 254Q431 267 437 273H454Q494 271 594 271Q634 271 659 271T695 272T707 272Q721 272 721 263Q721 261 719 249Q714 230 709 228Q706 227 694 227Q674 227 653 224Q646 221 643 215T629 164Q620 131 614 108Q589 6 586 3Q584 1 581 1Q571 1 553 21T530 52Q530 53 528 52T522 47Q448 -22 322 -22Q201 -22 126 55T50 252Z"></path></g><g data-mml-node="mi" transform="translate(3712,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="mi" transform="translate(4763,0)"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g><g data-mml-node="mtext" transform="translate(5532,0)"><path data-c="A0" d=""></path></g><g data-mml-node="mi" transform="translate(5782,0)"><path data-c="1D43A" d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q492 659 471 656T418 643T357 615T294 567T236 496T189 394T158 260Q156 242 156 221Q156 173 170 136T206 79T256 45T308 28T353 24Q407 24 452 47T514 106Q517 114 529 161T541 214Q541 222 528 224T468 227H431Q425 233 425 235T427 254Q431 267 437 273H454Q494 271 594 271Q634 271 659 271T695 272T707 272Q721 272 721 263Q721 261 719 249Q714 230 709 228Q706 227 694 227Q674 227 653 224Q646 221 643 215T629 164Q620 131 614 108Q589 6 586 3Q584 1 581 1Q571 1 553 21T530 52Q530 53 528 52T522 47Q448 -22 322 -22Q201 -22 126 55T50 252Z"></path></g><g data-mml-node="mi" transform="translate(6568,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(7097,0)"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path></g><g data-mml-node="mo" transform="translate(7877.8,0)"><path data-c="3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path></g><g data-mml-node="munder" transform="translate(8933.6,0)"><g data-mml-node="mo" transform="translate(643.8,0)"><path data-c="2211" d="M60 948Q63 950 665 950H1267L1325 815Q1384 677 1388 669H1348L1341 683Q1320 724 1285 761Q1235 809 1174 838T1033 881T882 898T699 902H574H543H251L259 891Q722 258 724 252Q725 250 724 246Q721 243 460 -56L196 -356Q196 -357 407 -357Q459 -357 548 -357T676 -358Q812 -358 896 -353T1063 -332T1204 -283T1307 -196Q1328 -170 1348 -124H1388Q1388 -125 1381 -145T1356 -210T1325 -294L1267 -449L666 -450Q64 -450 61 -448Q55 -446 55 -439Q55 -437 57 -433L590 177Q590 178 557 222T452 366T322 544L56 909L55 924Q55 945 60 948Z"></path></g><g data-mml-node="TeXAtom" transform="translate(0,-1107.7) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D451" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path></g><g data-mml-node="mo" transform="translate(520,0)"><path data-c="2208" d="M84 250Q84 372 166 450T360 539Q361 539 377 539T419 540T469 540H568Q583 532 583 520Q583 511 570 501L466 500Q355 499 329 494Q280 482 242 458T183 409T147 354T129 306T124 272V270H568Q583 262 583 250T568 230H124V228Q124 207 134 177T167 112T231 48T328 7Q355 1 466 0H570Q583 -10 583 -20Q583 -32 568 -40H471Q464 -40 446 -40T417 -41Q262 -41 172 45Q84 127 84 250Z"></path></g><g data-mml-node="mi" transform="translate(1187,0)"><path data-c="1D438" d="M492 213Q472 213 472 226Q472 230 477 250T482 285Q482 316 461 323T364 330H312Q311 328 277 192T243 52Q243 48 254 48T334 46Q428 46 458 48T518 61Q567 77 599 117T670 248Q680 270 683 272Q690 274 698 274Q718 274 718 261Q613 7 608 2Q605 0 322 0H133Q31 0 31 11Q31 13 34 25Q38 41 42 43T65 46Q92 46 125 49Q139 52 144 61Q146 66 215 342T285 622Q285 629 281 629Q273 632 228 634H197Q191 640 191 642T193 659Q197 676 203 680H757Q764 676 764 669Q764 664 751 557T737 447Q735 440 717 440H705Q698 445 698 453L701 476Q704 500 704 528Q704 558 697 578T678 609T643 625T596 632T532 634H485Q397 633 392 631Q388 629 386 622Q385 619 355 499T324 377Q347 376 372 376H398Q464 376 489 391T534 472Q538 488 540 490T557 493Q562 493 565 493T570 492T572 491T574 487T577 483L544 351Q511 218 508 216Q505 213 492 213Z"></path></g><g data-mml-node="mi" transform="translate(1951,0)"><path data-c="1D463" d="M173 380Q173 405 154 405Q130 405 104 376T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Q21 294 29 316T53 368T97 419T160 441Q202 441 225 417T249 361Q249 344 246 335Q246 329 231 291T200 202T182 113Q182 86 187 69Q200 26 250 26Q287 26 319 60T369 139T398 222T409 277Q409 300 401 317T383 343T365 361T357 383Q357 405 376 424T417 443Q436 443 451 425T467 367Q467 340 455 284T418 159T347 40T241 -11Q177 -11 139 22Q102 54 102 117Q102 148 110 181T151 298Q173 362 173 380Z"></path></g><g data-mml-node="mi" transform="translate(2436,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(2902,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(3502,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g></g><g data-mml-node="mrow" transform="translate(11831.8,0)"><g data-mml-node="mo"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="mi" transform="translate(389,0)"><path data-c="1D434" d="M208 74Q208 50 254 46Q272 46 272 35Q272 34 270 22Q267 8 264 4T251 0Q249 0 239 0T205 1T141 2Q70 2 50 0H42Q35 7 35 11Q37 38 48 46H62Q132 49 164 96Q170 102 345 401T523 704Q530 716 547 716H555H572Q578 707 578 706L606 383Q634 60 636 57Q641 46 701 46Q726 46 726 36Q726 34 723 22Q720 7 718 4T704 0Q701 0 690 0T651 1T578 2Q484 2 455 0H443Q437 6 437 9T439 27Q443 40 445 43L449 46H469Q523 49 533 63L521 213H283L249 155Q208 86 208 74ZM516 260Q516 271 504 416T490 562L463 519Q447 492 400 412L310 260L413 259Q516 259 516 260Z"></path></g><g data-mml-node="mi" transform="translate(1139,0)"><path data-c="1D450" d="M34 159Q34 268 120 355T306 442Q362 442 394 418T427 355Q427 326 408 306T360 285Q341 285 330 295T319 325T330 359T352 380T366 386H367Q367 388 361 392T340 400T306 404Q276 404 249 390Q228 381 206 359Q162 315 142 235T121 119Q121 73 147 50Q169 26 205 26H209Q321 26 394 111Q403 121 406 121Q410 121 419 112T429 98T420 83T391 55T346 25T282 0T202 -11Q127 -11 81 37T34 159Z"></path></g><g data-mml-node="mi" transform="translate(1572,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g><g data-mml-node="mi" transform="translate(1933,0)"><path data-c="1D462" d="M21 287Q21 295 30 318T55 370T99 420T158 442Q204 442 227 417T250 358Q250 340 216 246T182 105Q182 62 196 45T238 27T291 44T328 78L339 95Q341 99 377 247Q407 367 413 387T427 416Q444 431 463 431Q480 431 488 421T496 402L420 84Q419 79 419 68Q419 43 426 35T447 26Q469 29 482 57T512 145Q514 153 532 153Q551 153 551 144Q550 139 549 130T540 98T523 55T498 17T462 -8Q454 -10 438 -10Q372 -10 347 46Q345 45 336 36T318 21T296 6T267 -6T233 -11Q189 -11 155 7Q103 38 103 113Q103 170 138 262T173 379Q173 380 173 381Q173 390 173 393T169 400T158 404H154Q131 404 112 385T82 344T65 302T57 280Q55 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(2505,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(3034,0)"><path data-c="1D459" d="M117 59Q117 26 142 26Q179 26 205 131Q211 151 215 152Q217 153 225 153H229Q238 153 241 153T246 151T248 144Q247 138 245 128T234 90T214 43T183 6T137 -11Q101 -11 70 11T38 85Q38 97 39 102L104 360Q167 615 167 623Q167 626 166 628T162 632T157 634T149 635T141 636T132 637T122 637Q112 637 109 637T101 638T95 641T94 647Q94 649 96 661Q101 680 107 682T179 688Q194 689 213 690T243 693T254 694Q266 694 266 686Q266 675 193 386T118 83Q118 81 118 75T117 65V59Z"></path></g><g data-mml-node="mi" transform="translate(3332,0)"><path data-c="1D43A" d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q492 659 471 656T418 643T357 615T294 567T236 496T189 394T158 260Q156 242 156 221Q156 173 170 136T206 79T256 45T308 28T353 24Q407 24 452 47T514 106Q517 114 529 161T541 214Q541 222 528 224T468 227H431Q425 233 425 235T427 254Q431 267 437 273H454Q494 271 594 271Q634 271 659 271T695 272T707 272Q721 272 721 263Q721 261 719 249Q714 230 709 228Q706 227 694 227Q674 227 653 224Q646 221 643 215T629 164Q620 131 614 108Q589 6 586 3Q584 1 581 1Q571 1 553 21T530 52Q530 53 528 52T522 47Q448 -22 322 -22Q201 -22 126 55T50 252Z"></path></g><g data-mml-node="mi" transform="translate(4118,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="msub" transform="translate(5169,0)"><g data-mml-node="mi"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g><g data-mml-node="mi" transform="translate(616,-150) scale(0.707)"><path data-c="1D451" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path></g></g><g data-mml-node="mo" transform="translate(6424.9,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"></path></g><g data-mml-node="mi" transform="translate(7425.1,0)"><path data-c="1D435" d="M231 637Q204 637 199 638T194 649Q194 676 205 682Q206 683 335 683Q594 683 608 681Q671 671 713 636T756 544Q756 480 698 429T565 360L555 357Q619 348 660 311T702 219Q702 146 630 78T453 1Q446 0 242 0Q42 0 39 2Q35 5 35 10Q35 17 37 24Q42 43 47 45Q51 46 62 46H68Q95 46 128 49Q142 52 147 61Q150 65 219 339T288 628Q288 635 231 637ZM649 544Q649 574 634 600T585 634Q578 636 493 637Q473 637 451 637T416 636H403Q388 635 384 626Q382 622 352 506Q352 503 351 500L320 374H401Q482 374 494 376Q554 386 601 434T649 544ZM595 229Q595 273 572 302T512 336Q506 337 429 337Q311 337 310 336Q310 334 293 263T258 122L240 52Q240 48 252 48T333 46Q422 46 429 47Q491 54 543 105T595 229Z"></path></g><g data-mml-node="mi" transform="translate(8184.1,0)"><path data-c="1D44E" d="M33 157Q33 258 109 349T280 441Q331 441 370 392Q386 422 416 422Q429 422 439 414T449 394Q449 381 412 234T374 68Q374 43 381 35T402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487Q506 153 506 144Q506 138 501 117T481 63T449 13Q436 0 417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157ZM351 328Q351 334 346 350T323 385T277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q217 26 254 59T298 110Q300 114 325 217T351 328Z"></path></g><g data-mml-node="mi" transform="translate(8713.1,0)"><path data-c="1D460" d="M131 289Q131 321 147 354T203 415T300 442Q362 442 390 415T419 355Q419 323 402 308T364 292Q351 292 340 300T328 326Q328 342 337 354T354 372T367 378Q368 378 368 379Q368 382 361 388T336 399T297 405Q249 405 227 379T204 326Q204 301 223 291T278 274T330 259Q396 230 396 163Q396 135 385 107T352 51T289 7T195 -10Q118 -10 86 19T53 87Q53 126 74 143T118 160Q133 160 146 151T160 120Q160 94 142 76T111 58Q109 57 108 57T107 55Q108 52 115 47T146 34T201 27Q237 27 263 38T301 66T318 97T323 122Q323 150 302 164T254 181T195 196T148 231Q131 256 131 289Z"></path></g><g data-mml-node="mi" transform="translate(9182.1,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(9648.1,0)"><path data-c="1D459" d="M117 59Q117 26 142 26Q179 26 205 131Q211 151 215 152Q217 153 225 153H229Q238 153 241 153T246 151T248 144Q247 138 245 128T234 90T214 43T183 6T137 -11Q101 -11 70 11T38 85Q38 97 39 102L104 360Q167 615 167 623Q167 626 166 628T162 632T157 634T149 635T141 636T132 637T122 637Q112 637 109 637T101 638T95 641T94 647Q94 649 96 661Q101 680 107 682T179 688Q194 689 213 690T243 693T254 694Q266 694 266 686Q266 675 193 386T118 83Q118 81 118 75T117 65V59Z"></path></g><g data-mml-node="mi" transform="translate(9946.1,0)"><path data-c="1D456" d="M184 600Q184 624 203 642T247 661Q265 661 277 649T290 619Q290 596 270 577T226 557Q211 557 198 567T184 600ZM21 287Q21 295 30 318T54 369T98 420T158 442Q197 442 223 419T250 357Q250 340 236 301T196 196T154 83Q149 61 149 51Q149 26 166 26Q175 26 185 29T208 43T235 78T260 137Q263 149 265 151T282 153Q302 153 302 143Q302 135 293 112T268 61T223 11T161 -11Q129 -11 102 10T74 74Q74 91 79 106T122 220Q160 321 166 341T173 380Q173 404 156 404H154Q124 404 99 371T61 287Q60 286 59 284T58 281T56 279T53 278T49 278T41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(10291.1,0)"><path data-c="1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></g><g data-mml-node="mi" transform="translate(10891.1,0)"><path data-c="1D452" d="M39 168Q39 225 58 272T107 350T174 402T244 433T307 442H310Q355 442 388 420T421 355Q421 265 310 237Q261 224 176 223Q139 223 138 221Q138 219 132 186T125 128Q125 81 146 54T209 26T302 45T394 111Q403 121 406 121Q410 121 419 112T429 98T420 82T390 55T344 24T281 -1T205 -11Q126 -11 83 42T39 168ZM373 353Q367 405 305 405Q272 405 244 391T199 357T170 316T154 280T149 261Q149 260 169 260Q282 260 327 284T373 353Z"></path></g><g data-mml-node="mi" transform="translate(11357.1,0)"><path data-c="1D43A" d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q492 659 471 656T418 643T357 615T294 567T236 496T189 394T158 260Q156 242 156 221Q156 173 170 136T206 79T256 45T308 28T353 24Q407 24 452 47T514 106Q517 114 529 161T541 214Q541 222 528 224T468 227H431Q425 233 425 235T427 254Q431 267 437 273H454Q494 271 594 271Q634 271 659 271T695 272T707 272Q721 272 721 263Q721 261 719 249Q714 230 709 228Q706 227 694 227Q674 227 653 224Q646 221 643 215T629 164Q620 131 614 108Q589 6 586 3Q584 1 581 1Q571 1 553 21T530 52Q530 53 528 52T522 47Q448 -22 322 -22Q201 -22 126 55T50 252Z"></path></g><g data-mml-node="mi" transform="translate(12143.1,0)"><path data-c="1D440" d="M289 629Q289 635 232 637Q208 637 201 638T194 648Q194 649 196 659Q197 662 198 666T199 671T201 676T203 679T207 681T212 683T220 683T232 684Q238 684 262 684T307 683Q386 683 398 683T414 678Q415 674 451 396L487 117L510 154Q534 190 574 254T662 394Q837 673 839 675Q840 676 842 678T846 681L852 683H948Q965 683 988 683T1017 684Q1051 684 1051 673Q1051 668 1048 656T1045 643Q1041 637 1008 637Q968 636 957 634T939 623Q936 618 867 340T797 59Q797 55 798 54T805 50T822 48T855 46H886Q892 37 892 35Q892 19 885 5Q880 0 869 0Q864 0 828 1T736 2Q675 2 644 2T609 1Q592 1 592 11Q592 13 594 25Q598 41 602 43T625 46Q652 46 685 49Q699 52 704 61Q706 65 742 207T813 490T848 631L654 322Q458 10 453 5Q451 4 449 3Q444 0 433 0Q418 0 415 7Q413 11 374 317L335 624L267 354Q200 88 200 79Q206 46 272 46H282Q288 41 289 37T286 19Q282 3 278 1Q274 0 267 0Q265 0 255 0T221 1T157 2Q127 2 95 1T58 0Q43 0 39 2T35 11Q35 13 38 25T43 40Q45 46 65 46Q135 46 154 86Q158 92 223 354T289 629Z"></path></g><g data-mml-node="msub" transform="translate(13194.1,0)"><g data-mml-node="mi"><path data-c="1D449" d="M52 648Q52 670 65 683H76Q118 680 181 680Q299 680 320 683H330Q336 677 336 674T334 656Q329 641 325 637H304Q282 635 274 635Q245 630 242 620Q242 618 271 369T301 118L374 235Q447 352 520 471T595 594Q599 601 599 609Q599 633 555 637Q537 637 537 648Q537 649 539 661Q542 675 545 679T558 683Q560 683 570 683T604 682T668 681Q737 681 755 683H762Q769 676 769 672Q769 655 760 640Q757 637 743 637Q730 636 719 635T698 630T682 623T670 615T660 608T652 599T645 592L452 282Q272 -9 266 -16Q263 -18 259 -21L241 -22H234Q216 -22 216 -15Q213 -9 177 305Q139 623 138 626Q133 637 76 637H59Q52 642 52 648Z"></path></g><g data-mml-node="mi" transform="translate(616,-150) scale(0.707)"><path data-c="1D451" d="M366 683Q367 683 438 688T511 694Q523 694 523 686Q523 679 450 384T375 83T374 68Q374 26 402 26Q411 27 422 35Q443 55 463 131Q469 151 473 152Q475 153 483 153H487H491Q506 153 506 145Q506 140 503 129Q490 79 473 48T445 8T417 -8Q409 -10 393 -10Q359 -10 336 5T306 36L300 51Q299 52 296 50Q294 48 292 46Q233 -10 172 -10Q117 -10 75 30T33 157Q33 205 53 255T101 341Q148 398 195 420T280 442Q336 442 364 400Q369 394 369 396Q370 400 396 505T424 616Q424 629 417 632T378 637H357Q351 643 351 645T353 664Q358 683 366 683ZM352 326Q329 405 277 405Q242 405 210 374T160 293Q131 214 119 129Q119 126 119 118T118 106Q118 61 136 44T179 26Q233 26 290 98L298 109L352 326Z"></path></g></g><g data-mml-node="mo" transform="translate(14227.8,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></g></svg></mjx-container></p>
+<p>因此，事件1期间实际 GMV 合计低于对应滚动基线合计约 3.44 万。该结果表明事件期间存在较明显的负向经营偏离，但由于滚动基线尚未控制促销、节假日、库存、渠道投放和价格变化等业务因素，报告中应表述为“相对滚动基线的累计 GMV 缺口”，而不应写成“确认损失 3.44 万”。</p>
+<p>“经营指标异常分布”矩阵进一步展示事件1覆盖日期内各项经营指标的异常状态。矩阵中的 0 表示该指标当日未被标记异常，1 表示指标偏离滚动基线；红色背景用于突出异常单元格，底部总计表示当天同时异常的指标数量。事件1的 10 月 4 日、10 月 5 日和 10 月 6 日分别出现 11、10 和 6 个异常指标，说明该事件不是单一指标的偶发波动，而是多个经营指标在连续日期内共同偏离。矩阵中涉及 GMV、购买会话金额代理、购买会话率、购买会话数、购买用户数、购物车移除率和会话数等指标，因此需要同时从用户规模、购买效率、购物车风险和单次购买会话价值等方向进行排查。</p>
+<p>“选中事件 GMV 因子归因”图将事件累计 GMV 差额拆解到不同业务因子。红色柱表示该因子扩大了负向 GMV 缺口，绿色柱表示该因子提高 GMV 或抵消部分缺口，蓝色总计表示各项贡献加总后的事件累计差额。该图的作用不是证明某个因素因果性地造成了损失，而是识别哪些因素与事件期间的 GMV 偏离关系更密切，从而确定业务排查顺序。结合事件1的结果，主要负向贡献集中在用户规模、购买会话数量和购买效率相关因素，说明事件期间不仅存在 GMV 下降，还伴随流量或购买行为链路的同步变化。</p>
+<p>右侧“建议运营动作与验证方法”表将异常指标、事件归因和品牌品类贡献转化为业务排查清单。当前事件的主要问题类型包括商品吸引力或加购环节异常、重点品牌下降、重点品类下降和购物车移除增加。其中，商品吸引力或加购环节异常和购物车移除增加被标记为 P1，说明应优先核验；重点品牌和重点品类下降被标记为 P2，可在确认数据完整性和主要漏斗问题后继续下钻。建议表中的证据字段用于说明规则触发依据，例如加购率相对基线下降、购物车移除率相对基线上升，以及部分品牌或品类的累计 GMV 变化为负。</p>
+<h2 id="5-2-筛选时间综合判断（以事件1为例）"><a href="#5-2-筛选时间综合判断（以事件1为例）" class="headerlink" title="5.2 筛选时间综合判断（以事件1为例）"></a>5.2 筛选时间综合判断（以事件1为例）</h2><p>事件1并非单一日期或单一指标的随机波动，而是一个持续 3 天、多个经营指标共同异常的负向事件，期间实际 GMV 相对滚动基线累计低约 3.44 万。用户规模、购买行为和购物车相关指标同时偏离，说明问题可能同时涉及流量变化、商品吸引力、加购后的购买转化及重点品牌品类表现。但在开展运营调整前，必须先排除数据中断、埋点缺失或日级数据覆盖不完整等数据质量问题。</p>
+<p>针对该事件，建议按照以下顺序处理：</p>
+<ol>
+<li><strong>核验数据完整性。</strong> 检查事件日期的小时覆盖、最大事件时间、各事件类型最后出现时间、原始文件大小和 ETL 运行日志，确认 GMV、用户数和会话数下降不是由数据缺失造成。</li>
+<li><strong>排查流量与用户规模变化。</strong> 按小时、新老用户和流量来源拆解浏览用户、活跃用户和会话数，确认是否存在渠道停投、入口曝光下降或特定时段流量中断。</li>
+<li><strong>检查加购和购买链路。</strong> 对比事件前后浏览到加购率、加购到购买率、购买会话率和购买用户数，重点核查商品详情页、价格展示、优惠条件、库存、配送、结算和支付流程。</li>
+<li><strong>下钻购物车移除问题。</strong> 识别事件期间移除事件最多的商品、品牌和品类，检查价格变化、规格不可选、缺货、运费和促销失效等因素。</li>
+<li><strong>核查重点品牌与品类。</strong> 将事件负向贡献最大的品牌和品类作为优先排查对象，继续下钻至商品层，判断是否由少数核心商品下降造成。</li>
+<li><strong>验证改进效果。</strong> 运营动作实施后，对比事件前后或实验组与对照组的加购到购买率、购物车移除率、购买会话数、GMV 和购买会话金额代理，避免只依据单个转化率判断策略有效。</li>
+</ol>
+<p>经营异动页已经完成异常定位、影响评估和初步归因，但品牌和品类层面的具体责任对象仍需进一步展开。下一部分将进入品牌与品类分析，对筛选期内的头部经营贡献、高流量低转化对象以及当前异常事件中的主要负向品牌和品类进行下钻。</p>
+<hr>
+<h1 id="6-品牌与品类分析"><a href="#6-品牌与品类分析" class="headerlink" title="6. 品牌与品类分析"></a>6. 品牌与品类分析</h1><p><img src="/images/ecommerce-dashboard-report/brand-category-analysis.png" alt="品牌与品类分析看板"></p>
+<h2 id="6-1-品牌与品类经营贡献及异常归因"><a href="#6-1-品牌与品类经营贡献及异常归因" class="headerlink" title="6.1 品牌与品类经营贡献及异常归因"></a>6.1 品牌与品类经营贡献及异常归因</h2><p>品牌与品类分析页同时使用日期切片器和异常事件切片器区分两种分析范围。日期切片器控制筛选期内的整体经营表现，品牌 GMV Top10 和品类 GMV Top10 分别展示累计 GMV 最高的品牌与品类，用于识别主要经营贡献来源。当前结果中，“品牌缺失/未知”的 GMV 明显高于多数已识别品牌，多个品类也只能以数字 ID 展示，说明商品主数据中的品牌和品类映射尚不完整。此类记录虽然可以参与金额汇总和贡献计算，但无法直接对应具体业务对象，会降低经营结构分析和后续责任定位的可解释性，因此应优先补充商品、品牌和品类之间的映射关系。</p>
+<p>品牌流量—转化—GMV 散点图从三个维度评价品牌表现：横轴表示品牌浏览用户（日累计），纵轴表示品牌浏览到购买率，气泡大小表示品牌 GMV。该图能够将品牌划分为不同经营类型：</p>
+<table>
+<thead>
+<tr>
+<th>象限</th>
+<th>业务含义</th>
+<th>建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>高流量、高转化</td>
+<td>核心优势品牌</td>
+<td>保证库存、曝光和供应稳定</td>
+</tr>
+<tr>
+<td>高流量、低转化</td>
+<td>重点优化品牌</td>
+<td>优先检查价格、详情页、评价、库存和配送</td>
+</tr>
+<tr>
+<td>低流量、高转化</td>
+<td>潜力品牌</td>
+<td>小范围增加曝光，验证转化是否保持</td>
+</tr>
+<tr>
+<td>低流量、低转化</td>
+<td>低优先级品牌</td>
+<td>控制资源投入，必要时优化或淘汰</td>
+</tr>
+</tbody></table>
+<p>其中，高流量但低转化的品牌通常具有更高的优化优先级，因为其已经获得较多曝光，若能改善商品详情、价格竞争力、库存和配送条件，可能在不显著增加流量成本的情况下提升购买用户数和 GMV。低流量但高转化的品牌则适合通过小范围增加曝光验证增长潜力。右下角的重点品类经营表现表进一步结合品类 GMV、浏览用户、购物车移除率和浏览到购买率，对品类的经营规模、转化效率及购物车风险进行综合判断。</p>
+<p>红色负向贡献图由异常事件切片器控制，当前展示事件1中对 GMV 偏离产生主要负向贡献的品牌和品类，其筛选逻辑为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">选中异常事件</span><br><span class="line">    ↓</span><br><span class="line">按品牌或品类汇总 Delta</span><br><span class="line">    ↓</span><br><span class="line">保留 Delta &lt; 0</span><br><span class="line">    ↓</span><br><span class="line">选择数值最小的 10 个对象</span><br></pre></td></tr></table></figure>
+<p>这里的 Delta 表示选中事件内实际 GMV 相对基线 GMV 的变化，数值越负，说明该品牌或品类对事件负向缺口的贡献越大。品牌缺失/未知同时出现在筛选期 GMV 规模和异常事件负向贡献前列，说明维度信息缺失已经影响异常归因，当前结果只能定位到一组未映射商品，尚不能直接分配给具体品牌运营团队。</p>
+<h2 id="6-2-重点品类经营表现"><a href="#6-2-重点品类经营表现" class="headerlink" title="6.2 重点品类经营表现"></a>6.2 重点品类经营表现</h2><p>当前表格可见的重点品类数据包括：</p>
+<table>
+<thead>
+<tr>
+<th>品类</th>
+<th align="right">GMV</th>
+<th align="right">浏览用户（日累计）</th>
+<th align="right">购物车移除率</th>
+<th align="right">浏览到购买率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>appliances.environment.vacuum</td>
+<td align="right">138,623.97</td>
+<td align="right">47,363</td>
+<td align="right">50.17%</td>
+<td align="right">7.22%</td>
+</tr>
+<tr>
+<td>品类ID：1487580004916134735</td>
+<td align="right">80,341.84</td>
+<td align="right">31,396</td>
+<td align="right">65.58%</td>
+<td align="right">17.06%</td>
+</tr>
+<tr>
+<td>品类ID：1487580005092295511</td>
+<td align="right">418,307.97</td>
+<td align="right">169,683</td>
+<td align="right">56.06%</td>
+<td align="right">17.80%</td>
+</tr>
+<tr>
+<td>品类ID：1487580005134238553</td>
+<td align="right">68,346.80</td>
+<td align="right">40,940</td>
+<td align="right">70.04%</td>
+<td align="right">17.94%</td>
+</tr>
+<tr>
+<td>品类ID：1487580005268456287</td>
+<td align="right">265,282.40</td>
+<td align="right">94,939</td>
+<td align="right">53.94%</td>
+<td align="right">25.58%</td>
+</tr>
+</tbody></table>
+<p>表格总计为：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th align="right">总计</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>品类 GMV</td>
+<td align="right">2,901,306.43</td>
+</tr>
+<tr>
+<td>品类浏览用户（日累计）</td>
+<td align="right">1,527,321</td>
+</tr>
+<tr>
+<td>品类购物车移除率</td>
+<td align="right">59.27%</td>
+</tr>
+<tr>
+<td>品类浏览到购买率</td>
+<td align="right">13.39%</td>
+</tr>
+</tbody></table>
+<h3 id="可形成的具体判断"><a href="#可形成的具体判断" class="headerlink" title="可形成的具体判断"></a>可形成的具体判断</h3><ol>
+<li><p><strong>品类ID 1487580005092295511</strong></p>
+<ul>
+<li>GMV 最高，为 418,307.97；</li>
+<li>浏览用户也最高，为 169,683；</li>
+<li>转化率 17.80%，高于表格总计 13.39%；</li>
+<li>移除率 56.06%，略低于总计 59.27%。</li>
+</ul>
+<p>该品类属于规模和效率均较好的核心品类，应保证库存、曝光和供应稳定。</p>
+</li>
+<li><p><strong>品类ID 1487580005268456287</strong></p>
+<ul>
+<li>GMV 为 265,282.40；</li>
+<li>浏览到购买率达到 25.58%，是截图可见品类中最高；</li>
+<li>移除率为 53.94%。</li>
+</ul>
+<p>该品类具备较高转化效率，适合进一步评估增加曝光后的增量空间。</p>
+</li>
+<li><p><strong>appliances.environment.vacuum</strong></p>
+<ul>
+<li>GMV 为 138,623.97；</li>
+<li>浏览到购买率仅 7.22%，明显低于表格总计 13.39%；</li>
+<li>移除率为 50.17%。</li>
+</ul>
+<p>该品类存在“有一定流量和 GMV，但购买转化偏低”的特征，应检查价格、商品详情、购买决策周期和配送条件。</p>
+</li>
+<li><p><strong>品类ID 1487580005134238553</strong></p>
+<ul>
+<li>购物车移除率达到 70.04%，是截图可见品类中最高；</li>
+<li>浏览到购买率为 17.94%。</li>
+</ul>
+<p>虽然最终转化不低，但购物车反复移除风险突出，应下钻到商品层检查价格波动、规格选择、库存和促销条件。</p>
+</li>
+</ol>
+<hr>
+<h1 id="7-业务问题与解决策略"><a href="#7-业务问题与解决策略" class="headerlink" title="7. 业务问题与解决策略"></a>7. 业务问题与解决策略</h1><p>下表汇总看板识别出的主要业务问题、数据证据、建议动作及验证方式。相关结论用于确定排查和优化顺序，实施前仍需结合商品、库存、活动及原始事件数据进一步确认。</p>
+<table>
+<thead>
+<tr>
+<th>业务问题</th>
+<th>数据证据与判断</th>
+<th>建议动作</th>
+<th>验证方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>加购后购买转化不足</strong></td>
+<td>加购到购买率为 **20.98%**，意味着约 <strong>79.02%</strong> 的日级加购用户计数未进一步形成购买；购物车移除率为 **52.87%**。问题更可能集中在加购后的库存、优惠、配送、结算和支付环节。</td>
+<td>1. 建立高流量、低加购到购买率商品清单；<br>2. 在详情页提前展示库存、运费、预计送达时间和优惠门槛；<br>3. 检查购物车、结算和支付步骤的退出情况；<br>4. 对加购未购买用户开展购物车提醒或小范围优惠测试；<br>5. 核查 <code>cart</code>、<code>remove_from_cart</code> 和 <code>purchase</code> 埋点是否完整。</td>
+<td>采用小流量灰度或 A/B 测试。<br>主指标：加购到购买率；<br>辅助指标：浏览到购买率、购物车移除率；<br>经营指标：GMV、购买会话数；<br>保护指标：购买会话金额代理、页面加载时间。只有转化和 GMV 改善且保护指标未明显恶化，才扩大实施范围。</td>
+</tr>
+<tr>
+<td><strong>高流量品牌或品类转化不足</strong></td>
+<td>品牌散点图中存在高流量但转化率一般的对象；<code>appliances.environment.vacuum</code> 品类浏览到购买率为 **7.22%**，低于重点品类整体的 **13.39%**。这类对象已经获得较多流量，但未能有效转化为购买。</td>
+<td>1. 识别散点图中高流量、低转化品牌；<br>2. 检查商品详情、评价、价格、促销、库存和配送条件；<br>3. 与同品类高转化品牌进行对比；<br>4. 优化商品素材和购买信息；<br>5. 对低流量、高转化品牌进行有限增量曝光测试。</td>
+<td>比较优化前后的品牌浏览到购买率、品牌 GMV 和购买会话金额代理；使用相同星期结构或对照品牌，减少季节和活动因素干扰；增加曝光时同步观察转化率是否下降。</td>
+</tr>
+<tr>
+<td><strong>购物车移除行为偏高</strong></td>
+<td>整体购物车移除率为 **52.87%**，重点品类整体为 **59.27%**，部分品类达到 **65%—70%**。该指标为移除事件数与加购事件数之比，反映购物车阶段存在较强的商品放弃或反复选择现象，但不能解释为同等比例的用户放弃购买。</td>
+<td>1. 下钻至商品层统计加购和移除事件；<br>2. 检查高移除商品的价格、库存、规格、优惠和配送；<br>3. 分析移除是否集中发生在促销结束、价格变化或缺货之后；<br>4. 区分同日移除与跨日移除；<br>5. 判断购物车是否被用户作为收藏或比价工具；<br>6. 核查是否存在重复埋点。</td>
+<td>观察购物车移除率是否下降、加购到购买率是否提高，并同步检查 GMV、缺货率、投诉情况和价格变更频次。若能够获得订单数据，可进一步分析用户移除商品后是否购买了替代商品。</td>
+</tr>
+<tr>
+<td><strong>异常日期较多，存在误判风险</strong></td>
+<td>观察期内共有 <strong>49 个 GMV 异常日期</strong>、<strong>60 个转化或购物车异常日期</strong>，并形成 <strong>17 个异常事件</strong>。异常既可能是真实经营变化，也可能是促销峰值、埋点缺失或数据中断。</td>
+<td>建立事件分级机制：<br><strong>P0：</strong> 数据中断、埋点缺失、全链路同时归零，立即核查并补数；<br><strong>P1：</strong> 持续多日负向异常、GMV 缺口较大或多指标共同异常，当日排查；<br><strong>P2：</strong> 单日轻微异常或少数维度拖累，纳入周度复盘；<br><strong>观察：</strong> 正向峰值或低影响波动，记录活动背景。</td>
+<td>每个事件固定检查小时覆盖、最大事件时间、各事件类型最后出现时间、文件大小、ETL 日志，以及活跃用户、会话和漏斗指标是否同步变化；再结合活动、库存、价格和渠道信息判断是否为真实业务异常。</td>
+</tr>
+<tr>
+<td><strong>品牌和品类信息缺失</strong></td>
+<td>“品牌缺失/未知”在品牌 GMV Top10 和事件负向贡献中均占据显著位置，多个品类只能显示数字 ID。缺失维度会使真实责任对象被聚合到 <code>unknown</code>，降低经营分析和异常归因的可执行性。</td>
+<td>1. 建立 <code>product_id</code> 到品牌和品类的商品主数据映射；<br>2. 对 <code>unknown</code> 记录按商品 ID 下钻；<br>3. 统计缺失维度对 GMV、浏览用户和异常贡献的占比；<br>4. 将品牌、品类完整率纳入数据质量监控；<br>5. 补充历史映射后重新生成品牌和品类贡献结果。</td>
+<td>持续监控品牌完整率和品类完整率：完整率等于 1 减去缺失记录占比。完成映射后，应检查 <code>unknown</code> 占比是否下降，并重新验证 Top10 排名和异常贡献是否能够对应具体业务对象。</td>
+</tr>
+</tbody></table>
+<p>综合来看，当前最需要优先处理的是加购后的购买转化、购物车移除行为和数据完整性核验；品牌与品类主数据缺失则属于影响长期分析质量的基础问题。运营优化应先通过原始数据确认问题，再采用小范围实验验证效果，避免仅凭看板相关性直接调整业务策略。</p>
+<h1 id="8-运营行动优先级"><a href="#8-运营行动优先级" class="headerlink" title="8. 运营行动优先级"></a>8. 运营行动优先级</h1><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>业务问题</th>
+<th>具体动作</th>
+<th>建议责任团队</th>
+<th>验证指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P0</td>
+<td>数据中断或埋点异常</td>
+<td>核查小时覆盖、最大事件时间、事件类型和 ETL 日志</td>
+<td>数据工程/埋点团队</td>
+<td>数据完整率、事件覆盖小时数</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>品牌和品类主数据缺失</td>
+<td>补充 product-brand-category 映射并回填历史数据</td>
+<td>数据治理/商品团队</td>
+<td>品牌完整率、品类完整率</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>加购到购买率低</td>
+<td>检查库存、运费、优惠、结算和支付路径</td>
+<td>产品/交易/运营团队</td>
+<td>加购到购买率、GMV</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>购物车移除率高</td>
+<td>排查高移除商品、价格变化、库存和配送</td>
+<td>商品/运营团队</td>
+<td>移除率、购买率</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>高流量低转化品牌</td>
+<td>优化详情页、价格、评价和促销信息</td>
+<td>品牌运营团队</td>
+<td>品牌转化率、品牌GMV</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>持续性异常事件</td>
+<td>建立事件告警、负责人和处理时限</td>
+<td>BI/运营团队</td>
+<td>事件响应时间、缺口恢复速度</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>低流量高转化品牌</td>
+<td>小范围增加曝光，评估增量收益</td>
+<td>营销/推荐团队</td>
+<td>流量增量、转化率、增量GMV</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>新老用户结构优化</td>
+<td>分析新客首购和回访用户复购</td>
+<td>用户运营/CRM团队</td>
+<td>新客GMV、回访GMV、复购率</td>
+</tr>
+</tbody></table>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" data-id="cms8jd9zs0001mwy67buj1m6i" data-title="电商用户行为与经营异动数据分析报告" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Power-BI/" rel="tag">Power BI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E5%95%86/" rel="tag">电商</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2026/05/22/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">数据分析</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Power-BI/" rel="tag">Power BI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%95%86/" rel="tag">电商</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Power-BI/" style="font-size: 10px;">Power BI</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" style="font-size: 10px;">数据分析</a> <a href="/tags/%E7%94%B5%E5%95%86/" style="font-size: 10px;">电商</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/">电商用户行为与经营异动数据分析报告</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/22/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
