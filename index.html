@@ -183,6 +183,518 @@ mjx-container[display="true"] + br {
       <div class="outer">
         <section id="main">
   
+    <article id="post-final_credit_scorecard_project_report" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/08/05/final_credit_scorecard_project_report/" class="article-date">
+  <time class="dt-published" datetime="2026-08-04T16:00:00.000Z" itemprop="datePublished">2026-08-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E9%A1%B9%E7%9B%AE/">数据分析项目</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/08/05/final_credit_scorecard_project_report/">基于 LendingClub 已发放贷款样本的信用损失评分卡项目报告</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="基于-LendingClub-已发放贷款样本的信用损失评分卡项目报告"><a href="#基于-LendingClub-已发放贷款样本的信用损失评分卡项目报告" class="headerlink" title="基于 LendingClub 已发放贷款样本的信用损失评分卡项目报告"></a>基于 LendingClub 已发放贷款样本的信用损失评分卡项目报告</h1><blockquote>
+<p>数据来源：Kaggle LendingClub &#x2F; Loan Credit Risk &amp; Population Stability 公开数据集（项目中使用 <code>loan_2014_18.csv</code> 与 <code>loan_2019_20.csv</code>）：<a target="_blank" rel="noopener" href="https://www.kaggle.com/datasets/beatafaron/loan-credit-risk-and-population-stability">Loan - Credit Risk &amp; Population Stability</a>。  </p>
+</blockquote>
+<h2 id="1-项目背景与结果摘要"><a href="#1-项目背景与结果摘要" class="headerlink" title="1. 项目背景与结果摘要"></a>1. 项目背景与结果摘要</h2><p>本项目基于 LendingClub 已发放个人贷款样本，构建可解释的信用损失风险排序方法，并用于策略收紧回测和历史监控回放。样本范围限定为已发放贷款，不覆盖被拒绝申请人。</p>
+<p>项目先根据贷款终局状态构建 Good&#x2F;Bad 标签，再按放款年份检查样本成熟度，确定 Train、Validation、OOT 和监控回放窗口。特征筛选结合数据字典和字段业务含义完成变量泄漏审计，剔除贷后还款、逾期、催收、回收及当前贷款状态等结果类字段。LendingClub 的 <code>grade</code>、<code>sub_grade</code>、<code>int_rate</code>、<code>installment</code> 不作为主评分卡输入，仅用于风险分层对照和模型结果展示。</p>
+<p>主模型采用包含 19 个变量的 V2 WOE-Logistic 评分卡。模型在 Train、Validation 和 OOT 样本上的 AUC 分别为 0.6971、0.6989 和 0.6833，KS 分别为 0.2858、0.2849 和 0.2606。Validation 与 Train 的排序指标接近，OOT 区分能力有所回落。</p>
+<p>模型区分能力与概率校准分开评价。Validation 样本实际坏账率为 19.62%，平均预测 PD 为 17.06%，低估 2.56 个百分点；OOT 样本实际坏账率为 22.18%，平均预测 PD 为 16.11%，低估 6.08 个百分点。评分结果用于风险排序、分层及 Cut-off 回测；原始 PD 在重新校准前不直接用于风险定价、收益测算或资本计量。</p>
+<p>策略回测以历史已发放贷款为样本，比较不同 Cut-off 下的通过率、批准样本坏账率和坏客户剔除率。<code>score &gt;= 600</code> 在 Validation_2016 上通过率为 67.02%，批准样本坏账率为 13.08%，坏客户剔除率为 55.33%；在 OOT_2017_2018 上通过率为 70.49%，批准样本坏账率为 16.24%，坏客户剔除率为 48.41%。</p>
+<p>监控回放区分全量月度发放样本和终局样本：PSI、分数分布、风险带占比及策略通过率基于全量月度发放数据，AUC、KS、实际坏账率及校准偏差基于终局样本。2019–2020 窗口共有 664,824 条记录，其中 79,691 条为终局贷款，终局率为 11.99%。2020-04 后 Score PSI 从 2020-03 的 0.0892 跳到 0.4047，之后数月维持在 0.4729 至 0.5920 区间。</p>
+<h2 id="2-数据来源与样本定义"><a href="#2-数据来源与样本定义" class="headerlink" title="2. 数据来源与样本定义"></a>2. 数据来源与样本定义</h2><p>本项目的观察单位是一笔已发放贷款。报告围绕已发放贷款的风险排序、历史 Cut-off 收紧回测和月度分布监控展开。</p>
+<p>监督标签只使用终局状态。<code>Fully Paid</code> 定义为 Good，目标值为 0；<code>Charged Off</code> 和 <code>Default</code> 定义为 Bad，目标值为 1；<code>Current</code>、<code>Late</code>、<code>In Grace Period</code> 和 <code>Issued</code> 尚未形成终局结果，不纳入监督建模。</p>
+<table>
+<thead>
+<tr>
+<th>标签组</th>
+<th>原始状态</th>
+<th align="right">建模目标值</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Good</td>
+<td><code>Fully Paid</code></td>
+<td align="right">0</td>
+<td>进入监督建模</td>
+</tr>
+<tr>
+<td>Bad</td>
+<td><code>Charged Off</code>、<code>Default</code></td>
+<td align="right">1</td>
+<td>进入监督建模</td>
+</tr>
+<tr>
+<td>Indeterminate</td>
+<td><code>Current</code>、<code>Late</code>、<code>In Grace Period</code>、<code>Issued</code></td>
+<td align="right">空</td>
+<td>不进入监督标签</td>
+</tr>
+</tbody></table>
+<p>时间切分按贷款发放年份展开。2014–2015 终局贷款用于训练，2016 终局贷款用于验证，2017–2018 终局贷款用于 OOT；2017–2018 还用于中间期全量月度监控回放，2019–2020 用于远期监控回放。</p>
+<table>
+<thead>
+<tr>
+<th>样本窗口</th>
+<th>用途</th>
+<th align="right">样本量或记录数</th>
+<th>口径说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2014–2015 终局样本</td>
+<td>Train</td>
+<td align="right">638,456</td>
+<td>仅含终局贷款</td>
+</tr>
+<tr>
+<td>2016 终局样本</td>
+<td>Validation</td>
+<td align="right">403,104</td>
+<td>仅含终局贷款</td>
+</tr>
+<tr>
+<td>2017–2018 终局样本</td>
+<td>OOT</td>
+<td align="right">511,546</td>
+<td>时间外验证，仅含终局贷款</td>
+</tr>
+<tr>
+<td>2017–2018 全量月度样本</td>
+<td>中间期监控回放</td>
+<td align="right">见月度监控表</td>
+<td>PSI 等分布指标使用全量月度样本</td>
+</tr>
+<tr>
+<td>2019–2020 全量月度样本</td>
+<td>远期监控回放</td>
+<td align="right">664,824</td>
+<td>终局贷款 79,691，终局率 11.99%</td>
+</tr>
+</tbody></table>
+<p>年度成熟度结果显示，2014、2015、2016、2017、2018 的终局率分别为 99.996%、95.66%、92.79%、70.87%、39.81%。项目采用 2017–2018 终局样本做 OOT，2019–2020 全量月度样本做远期分布监控。</p>
+<table>
+<thead>
+<tr>
+<th align="right">发放年份</th>
+<th align="right">总记录数</th>
+<th align="right">终局贷款数</th>
+<th align="right">终局率</th>
+<th align="right">终局样本坏账率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">2014</td>
+<td align="right">235,629</td>
+<td align="right">235,619</td>
+<td align="right">99.996%</td>
+<td align="right">17.72%</td>
+</tr>
+<tr>
+<td align="right">2015</td>
+<td align="right">421,095</td>
+<td align="right">402,837</td>
+<td align="right">95.66%</td>
+<td align="right">19.79%</td>
+</tr>
+<tr>
+<td align="right">2016</td>
+<td align="right">434,407</td>
+<td align="right">403,104</td>
+<td align="right">92.79%</td>
+<td align="right">19.62%</td>
+</tr>
+<tr>
+<td align="right">2017</td>
+<td align="right">443,579</td>
+<td align="right">314,368</td>
+<td align="right">70.87%</td>
+<td align="right">21.07%</td>
+</tr>
+<tr>
+<td align="right">2018</td>
+<td align="right">495,242</td>
+<td align="right">197,178</td>
+<td align="right">39.81%</td>
+<td align="right">23.95%</td>
+</tr>
+</tbody></table>
+<p><img src="/images/credit_scorecard_report/page1_data_quality.png" alt="数据质量与样本定义"></p>
+<p>数据质量与样本定义看板展示了各年度贷款规模、终局&#x2F;未成熟样本结构、终局率与终局坏账率，并汇总 Train、Validation、OOT 及监控回放窗口。2014–2016 年终局率均在 92% 以上，2017–2018 年终局率下降；2019–2020 贷款主要用于远期分布监控。</p>
+<p>看板同时显示，终局样本坏账率从 2014 年的 17.72% 上升至 2018 年的 23.95%。后续模型验证和监控回放以这个时间变化为背景展开。</p>
+<h2 id="3-变量治理与泄漏控制"><a href="#3-变量治理与泄漏控制" class="headerlink" title="3. 变量治理与泄漏控制"></a>3. 变量治理与泄漏控制</h2><p>变量筛选以放款前的信息可得性和业务含义为基础，将原始字段划分为申请时可用信息、待复核字段、ID&#x2F;时间字段、平台评级与定价字段、标签字段及贷后结果字段，并据此确定评分卡候选变量范围。</p>
+<p>泄漏审计识别出 32 个 <code>POST_ORIGINATION_LEAKAGE</code> 字段并标记为 <code>DROP_LEAKAGE</code>。典型例子包括 <code>out_prncp</code>、<code>total_pymnt</code>、<code>total_rec_prncp</code>、<code>recoveries</code>、<code>collection_recovery_fee</code>、<code>last_pymnt_d</code>、<code>last_pymnt_amnt</code>、<code>last_credit_pull_d</code>、<code>last_fico_range_high</code>、<code>last_fico_range_low</code> 等。这些字段反映的是放款之后的还款、回收、催收或贷后更新信息，不能作为贷前评分卡输入。</p>
+<p><code>loan_status</code> 被标记为 <code>TARGET_ONLY</code>，仅用于构造 Good、Bad 和 Indeterminate 标签，不进入模型特征。</p>
+<p>LendingClub 平台评级与定价相关字段 <code>grade</code>、<code>sub_grade</code>、<code>int_rate</code> 和 <code>installment</code> 不纳入主评分卡，仅用于风险分层对照。主模型以申请阶段可获得的借款人信息为主要输入；字段可用性依据数据字典和业务含义确定。</p>
+<h2 id="4-WOE-IV-分箱与评分卡建模"><a href="#4-WOE-IV-分箱与评分卡建模" class="headerlink" title="4. WOE&#x2F;IV 分箱与评分卡建模"></a>4. WOE&#x2F;IV 分箱与评分卡建模</h2><p>主模型采用 WOE-Logistic 评分卡，入模变量均经过 WOE 转换。目标变量定义为 Bad&#x3D;1，WOE 采用 <code>ln(DistGood / DistBad)</code> 口径，最终入模变量的系数方向检查与该定义保持一致。</p>
+<p>入模变量里，IV 较高的几个变量包括 <code>term</code>、<code>fico_avg</code>、<code>acc_open_past_24mths</code>、<code>dti</code> 和 <code>num_tl_op_past_12m</code>，覆盖贷款期限、信用评分、近期开账户行为和债务负担等维度。</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>业务含义</th>
+<th align="right">Total IV</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>term</code></td>
+<td>贷款期限</td>
+<td align="right">0.1876</td>
+</tr>
+<tr>
+<td><code>fico_avg</code></td>
+<td>FICO 区间均值</td>
+<td align="right">0.1013</td>
+</tr>
+<tr>
+<td><code>acc_open_past_24mths</code></td>
+<td>过去 24 个月新开账户数</td>
+<td align="right">0.0846</td>
+</tr>
+<tr>
+<td><code>dti</code></td>
+<td>债务收入比</td>
+<td align="right">0.0654</td>
+</tr>
+<tr>
+<td><code>num_tl_op_past_12m</code></td>
+<td>过去 12 个月新开账户数</td>
+<td align="right">0.0592</td>
+</tr>
+</tbody></table>
+<p>模型按照“基准对照—候选评分卡—稳定性优化”的路径迭代。V0 以 LendingClub 原有 <code>grade</code> 作为风险排序基准；V1 在申请阶段可用变量中完成 WOE 转换，并通过 IV、相关性和 VIF 筛选形成初始评分卡；V2 结合 Validation 和 OOT 表现进一步筛选变量，最终保留 19 个变量作为主模型。</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th align="right">变量数</th>
+<th align="right">Validation AUC</th>
+<th align="right">Validation KS</th>
+<th align="right">OOT AUC</th>
+<th align="right">OOT KS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>V0</td>
+<td align="right">1</td>
+<td align="right">0.6854</td>
+<td align="right">0.2778</td>
+<td align="right">0.6728</td>
+<td align="right">0.2691</td>
+</tr>
+<tr>
+<td>V1</td>
+<td align="right">20</td>
+<td align="right">0.6992</td>
+<td align="right">0.2852</td>
+<td align="right">0.6834</td>
+<td align="right">0.2608</td>
+</tr>
+<tr>
+<td>V2</td>
+<td align="right">19</td>
+<td align="right">0.6989</td>
+<td align="right">0.2849</td>
+<td align="right">0.6833</td>
+<td align="right">0.2606</td>
+</tr>
+</tbody></table>
+<p>最终报告以 V2 为主模型。V2 在 Train、Validation、OOT 上的 AUC 分别为 0.6971、0.6989、0.6833，KS 分别为 0.2858、0.2849、0.2606，Brier 分别为 0.1419、0.1451、0.1637。Validation 与 Train 的排序指标接近，OOT 上的 AUC、KS 有所回落。</p>
+<table>
+<thead>
+<tr>
+<th>样本</th>
+<th align="right">AUC</th>
+<th align="right">KS</th>
+<th align="right">Brier</th>
+<th align="right">校准偏差</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Train</td>
+<td align="right">0.6971</td>
+<td align="right">0.2858</td>
+<td align="right">0.1419</td>
+<td align="right">0.00pp</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td align="right">0.6989</td>
+<td align="right">0.2849</td>
+<td align="right">0.1451</td>
+<td align="right">-2.56pp</td>
+</tr>
+<tr>
+<td>OOT</td>
+<td align="right">0.6833</td>
+<td align="right">0.2606</td>
+<td align="right">0.1637</td>
+<td align="right">-6.08pp</td>
+</tr>
+</tbody></table>
+<p>校准结果显示，Validation 实际坏账率为 19.62%，平均预测 PD 为 17.06%；OOT 实际坏账率为 22.18%，平均预测 PD 为 16.11%，分别低估 2.56 和 6.08 个百分点。当前模型用于风险排序、客户分层和 Cut-off 策略回测；预测 PD 若用于风险定价或收益测算，需要先进行概率校准。</p>
+<p>评分转换使用 600 分作为训练集平均 Good:Bad odds 的基准点，训练集平均坏账率为 19.0240%，对应 Good:Bad odds 为 4.2565，PDO 为 20。风险带按分数区间拆为 A 到 E，坏账率从 A 到 E 单调上升。</p>
+<table>
+<thead>
+<tr>
+<th>风险带</th>
+<th>分数区间</th>
+<th align="right">坏账率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>640+</td>
+<td align="right">4.73%</td>
+</tr>
+<tr>
+<td>B</td>
+<td>620-639</td>
+<td align="right">10.12%</td>
+</tr>
+<tr>
+<td>C</td>
+<td>600-619</td>
+<td align="right">17.61%</td>
+</tr>
+<tr>
+<td>D</td>
+<td>580-599</td>
+<td align="right">28.04%</td>
+</tr>
+<tr>
+<td>E</td>
+<td>&lt;580</td>
+<td align="right">43.78%</td>
+</tr>
+</tbody></table>
+<p><img src="/images/credit_scorecard_report/page2_model_performance.png" alt="评分卡模型表现"></p>
+<p>评分卡模型表现看板汇总了 V0&#x2F;V1&#x2F;V2 的 AUC、KS 对比，以及 V2 的变量 IV、系数方向和风险带表现。V1 到 V2 在变量优化后没有明显损失区分能力。</p>
+<p>风险带坏账率从 A 到 E 单调上升，评分结果形成可用于策略分析的风险分层。</p>
+<h2 id="5-Cut-off-策略模拟"><a href="#5-Cut-off-策略模拟" class="headerlink" title="5. Cut-off 策略模拟"></a>5. Cut-off 策略模拟</h2><p>Cut-off 回测用于评估不同评分阈值下通过率、批准样本坏账率和坏客户剔除率的变化，比较规模与风险之间的取舍。样本均来自历史已发放贷款，回测中的“通过”和“拒绝”表示按评分阈值重新划分后的历史样本。</p>
+<p>本节以 580、600、620 作为三档测试点：580 偏宽松，600 作为折中候选阈值，620 偏收紧。下表列出 <code>score &gt;= 600</code> 在 Validation 和 OOT 上的核心回测结果。</p>
+<table>
+<thead>
+<tr>
+<th>样本</th>
+<th align="right">Cut-off</th>
+<th align="right">通过率</th>
+<th align="right">批准样本坏账率</th>
+<th align="right">坏客户剔除率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Validation_2016</td>
+<td align="right">score &gt;&#x3D; 600</td>
+<td align="right">67.02%</td>
+<td align="right">13.08%</td>
+<td align="right">55.33%</td>
+</tr>
+<tr>
+<td>OOT_2017_2018</td>
+<td align="right">score &gt;&#x3D; 600</td>
+<td align="right">70.49%</td>
+<td align="right">16.24%</td>
+<td align="right">48.41%</td>
+</tr>
+</tbody></table>
+<p><img src="/images/credit_scorecard_report/page3_strategy_simulation2.png" alt="策略模拟与Cut-off选择 - Validation_2016"></p>
+<p>Validation_2016 看板展示了不同 Cut-off 下 Pass Rate、Bad Rate 和 Bad Rejection Rate 的变化。阈值提高时，通过率下降，批准样本坏账率降低，坏客户剔除率上升。</p>
+<p><img src="/images/credit_scorecard_report/page3_strategy_simulation1.png" alt="策略模拟与Cut-off选择 - OOT_2017_2018"></p>
+<p>在 OOT_2017_2018 样本中，<code>score &gt;= 600</code> 时通过率为 70.49%，批准样本坏账率为 16.24%，坏客户剔除率为 48.41%。与 Validation_2016 相比，通过率有所提高，但批准样本坏账率由 13.08% 上升至 16.24%，坏客户剔除率由 55.33% 下降至 48.41%，表明相同 Cut-off 在时间外样本中的风险过滤效果有所减弱。</p>
+<p>看板同时展示 Simplified Profit，用于辅助比较不同 Cut-off 下规模与风险取舍的相对指标。</p>
+<h2 id="6-PSI-监控与历史回放"><a href="#6-PSI-监控与历史回放" class="headerlink" title="6. PSI 监控与历史回放"></a>6. PSI 监控与历史回放</h2><p>监控回放按样本成熟度区分两类指标口径：PSI、分数分布、风险带分布及 <code>score &gt;= 600</code> 通过率基于全量月度发放样本计算；AUC、KS、实际坏账率和校准偏差仅在终局月度样本上评价。</p>
+<p>2017–2018 同时用于 OOT 验证和中间期监控回放，但样本口径不同：OOT 使用终局贷款衡量时间外排序表现，监控回放使用全量月度样本观察分数及风险结构变化。2019–2020 作为远期监控窗口，共包含 664,824 条记录，其中终局贷款 79,691 条，终局率为 11.99%。</p>
+<p>2019–2020 阶段主要观察分数、风险带及特征分布相对训练期的漂移；坏账表现指标仅基于已形成终局结果的子样本计算。</p>
+<p><img src="/images/credit_scorecard_report/page4_monitoring_psi.png" alt="监控回放与PSI漂移"></p>
+<p>监控回放看板汇总了 Score PSI、特征 PSI、风险带占比和策略通过率的月度变化，用于观察后续客群相对训练基准的分布漂移。</p>
+<p>Score PSI 在 2020-04 从 2020-03 的 0.0892 上升至 0.4047，2020-05 至 2020-09 维持在 0.4729–0.5920 区间。同期风险带占比和 <code>score &gt;= 600</code>、<code>score &gt;= 620</code> 的通过率结构发生变化；特征 PSI 用于定位主要漂移变量。</p>
+<p>Score PSI 反映评分分布漂移，不直接评价坏账表现。2019–2020 年的坏账率、AUC 和 KS 等表现指标仍以终局样本为评价口径。</p>
+<h2 id="7-局限性与后续优化"><a href="#7-局限性与后续优化" class="headerlink" title="7. 局限性与后续优化"></a>7. 局限性与后续优化</h2><p>第一，样本没有拒绝申请人，无法评估被拒样本的风险分布、审批通过率变化或拒绝人群中的潜在收益。</p>
+<p>第二，终局标签存在成熟期。<code>Current</code>、<code>Late</code>、<code>In Grace Period</code> 和 <code>Issued</code> 不进入监督标签，越新的年份可用于监督建模的样本越少。</p>
+<p>第三，2017–2018 OOT 使用终局样本，只覆盖已经形成最终状态的贷款；2017–2018 全量发放样本用于监控回放。</p>
+<p>第四，2019–2020 标签成熟度低。该窗口终局率为 11.99%，适合看 PSI、风险带占比和策略通过率等领先指标，低成熟度月份的实际坏账率不作为完整未来表现。</p>
+<p>第五，模型存在时间外 PD 低估。Validation 低估 2.56 个百分点，OOT 低估 6.08 个百分点。PD 用于定价、资本、收益或额度策略前，需要补充校准模型或保守 PD scaling。</p>
+<p>第六，Cut-off 模拟不是完整收益模型。Simplified Profit 没有覆盖资金成本、运营成本、资本占用、提前还款、真实回收和完整申请审批漏斗，不作为银行利润结论。</p>
+<p>后续优化方向包括：补充拒绝样本或做拒绝推断；按产品、期限、FICO 或客群做分群策略；增加 PD 校准层并回放校准后表现；加入 LightGBM 等 challenger 模型，同时保留 WOE-Logistic 作为可解释基线。</p>
+<h2 id="附录-A：关键文件清单"><a href="#附录-A：关键文件清单" class="headerlink" title="附录 A：关键文件清单"></a>附录 A：关键文件清单</h2><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>在项目中的作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>loan_2014_18.csv</code></td>
+<td>2014–2018 年 LendingClub 贷款样本</td>
+</tr>
+<tr>
+<td><code>loan_2019_20.csv</code></td>
+<td>2019–2020 年远期监控回放样本</td>
+</tr>
+<tr>
+<td><code>LoanDataDictionary.xlsx</code></td>
+<td>字段释义和变量治理依据</td>
+</tr>
+<tr>
+<td><code>reports/sample_selection_rules.md</code></td>
+<td>样本单位、标签定义和监督样本边界</td>
+</tr>
+<tr>
+<td><code>outputs/maturity_report.csv</code></td>
+<td>样本成熟度审计产物</td>
+</tr>
+<tr>
+<td><code>outputs/leakage_audit.csv</code></td>
+<td>变量泄漏、标签字段和 benchmark 字段审计</td>
+</tr>
+<tr>
+<td><code>outputs/woe_iv_report.csv</code></td>
+<td>WOE&#x2F;IV 分箱结果</td>
+</tr>
+<tr>
+<td><code>outputs/model_coefficients.csv</code></td>
+<td>V2 WOE-Logistic 系数、IV、PSI 和方向检查</td>
+</tr>
+<tr>
+<td><code>outputs/score_scaling_config.yaml</code></td>
+<td>评分缩放参数、PDO 和风险带定义</td>
+</tr>
+<tr>
+<td><code>reports/model_iteration_log.csv</code></td>
+<td>V0&#x2F;V1&#x2F;V2 模型迭代指标</td>
+</tr>
+<tr>
+<td><code>reports/performance_by_sample.csv</code></td>
+<td>Train、Validation、OOT 表现和校准偏差</td>
+</tr>
+<tr>
+<td><code>outputs/strategy_simulation.csv</code></td>
+<td>Cut-off 收紧回测结果</td>
+</tr>
+<tr>
+<td><code>outputs/monthly_monitoring.csv</code></td>
+<td>月度 PSI、风险带、通过率和终局子样本表现</td>
+</tr>
+<tr>
+<td><code>outputs/monitoring_policy.md</code></td>
+<td>监控指标解释口径</td>
+</tr>
+<tr>
+<td><code>powerbi_marts/*.csv</code></td>
+<td>Power BI 数据集市 fact&#x2F;dim 表</td>
+</tr>
+<tr>
+<td><code>powerbi_marts/credit_scorecard_powerbi.pbip</code></td>
+<td>Power BI 项目入口文件</td>
+</tr>
+<tr>
+<td><code>powerbi_marts/credit_scorecard_powerbi.Report/definition.pbir</code></td>
+<td>Power BI 报告定义文件</td>
+</tr>
+<tr>
+<td><code>evidence_map.csv</code></td>
+<td>报告结论、证据文件、指标字段和限制条件映射</td>
+</tr>
+</tbody></table>
+<h2 id="附录-B：核心指标口径"><a href="#附录-B：核心指标口径" class="headerlink" title="附录 B：核心指标口径"></a>附录 B：核心指标口径</h2><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>本项目中的解释方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WOE</td>
+<td>将分箱后的 Good&#x2F;Bad 分布差异转换为模型输入，系数文件中体现为 <code>*_woe</code></td>
+</tr>
+<tr>
+<td>IV</td>
+<td>衡量变量分箱后的区分度，用于变量筛选和解释，不单独作为模型好坏结论</td>
+</tr>
+<tr>
+<td>AUC</td>
+<td>终局标签样本上的排序指标</td>
+</tr>
+<tr>
+<td>KS</td>
+<td>终局标签样本上的区分度指标</td>
+</tr>
+<tr>
+<td>Brier</td>
+<td>终局标签样本上的概率预测误差指标</td>
+</tr>
+<tr>
+<td>PD</td>
+<td>模型预测坏账概率；Validation 和 OOT 存在低估</td>
+</tr>
+<tr>
+<td>Score</td>
+<td>由预测 PD 按 Good:Bad odds 转换得到，分数越高表示预测风险越低</td>
+</tr>
+<tr>
+<td>PDO</td>
+<td>Points to Double the Odds，本项目设置为 20</td>
+</tr>
+<tr>
+<td>Cut-off</td>
+<td>历史已发放贷款上的分数阈值收紧回测，不是完整审批策略</td>
+</tr>
+<tr>
+<td>PSI</td>
+<td>分布漂移指标；本项目的 Score PSI 使用全量月度发放样本</td>
+</tr>
+<tr>
+<td>OOT</td>
+<td>2017–2018 终局样本上的时间外验证</td>
+</tr>
+</tbody></table>
+<h2 id="附录-C：可复现实验路径"><a href="#附录-C：可复现实验路径" class="headerlink" title="附录 C：可复现实验路径"></a>附录 C：可复现实验路径</h2><ol>
+<li>使用 <code>etl_credit_loss_labels.py</code> 生成标签、样本切分和成熟度产物。</li>
+<li>使用 <code>audit_feature_leakage.py</code> 生成变量泄漏审计结果。</li>
+<li>使用 <code>build_woe_iv_bins.py</code> 生成 WOE&#x2F;IV 分箱报告。</li>
+<li>使用 <code>build_logistic_scorecard.py</code> 训练 WOE-Logistic 评分卡并输出系数和缩放参数。</li>
+<li>使用 <code>validate_scorecard_model.py</code> 生成 Train、Validation、OOT 表现与校准结果。</li>
+<li>使用 <code>score_loans.py</code> 生成贷款分数和风险带。</li>
+<li>使用 <code>simulate_cutoff_strategy.py</code> 生成 Cut-off 策略回测。</li>
+<li>使用 <code>monitor_scorecard_psi.py</code> 生成月度监控回放。</li>
+<li>使用 <code>export_powerbi_marts.py</code> 和 Power BI PBIP&#x2F;PBIR 文件生成四页看板所需的数据集市和报告结构。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/08/05/final_credit_scorecard_project_report/" data-id="cmsmzj1j20000agy68z7i6834" data-title="基于 LendingClub 已发放贷款样本的信用损失评分卡项目报告" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LendingClub/" rel="tag">LendingClub</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Logistic-Regression/" rel="tag">Logistic Regression</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Power-BI/" rel="tag">Power BI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WOE/" rel="tag">WOE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E7%94%A8%E8%AF%84%E5%88%86%E5%8D%A1/" rel="tag">信用评分卡</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BF%A1%E7%94%A8%E9%A3%8E%E9%99%A9/" rel="tag">信用风险</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-电商经营看板数据分析报告" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" class="article-date">
@@ -701,7 +1213,7 @@ mjx-container[display="true"] + br {
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" data-id="cmsblvcvt0000woy6hla9hrkr" data-title="电商用户行为与经营异动数据分析报告（附Power BI 看板展示）" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" data-id="cmsmzj1j50001agy63tozfokn" data-title="电商用户行为与经营异动数据分析报告（附Power BI 看板展示）" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -754,7 +1266,7 @@ mjx-container[display="true"] + br {
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/05/22/hello-world/" data-id="cmsblvcvw0001woy62dtiffxv" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/05/22/hello-world/" data-id="cmpgq58jp00002gy670pbc3x8" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -776,7 +1288,7 @@ mjx-container[display="true"] + br {
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">数据分析</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">数据分析</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E9%A1%B9%E7%9B%AE/">数据分析项目</a></li></ul>
     </div>
   </div>
 
@@ -786,7 +1298,7 @@ mjx-container[display="true"] + br {
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Power-BI/" rel="tag">Power BI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%95%86/" rel="tag">电商</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/LendingClub/" rel="tag">LendingClub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Logistic-Regression/" rel="tag">Logistic Regression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Power-BI/" rel="tag">Power BI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WOE/" rel="tag">WOE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E7%94%A8%E8%AF%84%E5%88%86%E5%8D%A1/" rel="tag">信用评分卡</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BF%A1%E7%94%A8%E9%A3%8E%E9%99%A9/" rel="tag">信用风险</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag">数据分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%B5%E5%95%86/" rel="tag">电商</a></li></ul>
     </div>
   </div>
 
@@ -796,7 +1308,7 @@ mjx-container[display="true"] + br {
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Power-BI/" style="font-size: 10px;">Power BI</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" style="font-size: 10px;">数据分析</a> <a href="/tags/%E7%94%B5%E5%95%86/" style="font-size: 10px;">电商</a>
+      <a href="/tags/LendingClub/" style="font-size: 10px;">LendingClub</a> <a href="/tags/Logistic-Regression/" style="font-size: 10px;">Logistic Regression</a> <a href="/tags/Power-BI/" style="font-size: 20px;">Power BI</a> <a href="/tags/WOE/" style="font-size: 10px;">WOE</a> <a href="/tags/%E4%BF%A1%E7%94%A8%E8%AF%84%E5%88%86%E5%8D%A1/" style="font-size: 10px;">信用评分卡</a> <a href="/tags/%E4%BF%A1%E7%94%A8%E9%A3%8E%E9%99%A9/" style="font-size: 10px;">信用风险</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" style="font-size: 10px;">数据分析</a> <a href="/tags/%E7%94%B5%E5%95%86/" style="font-size: 10px;">电商</a>
     </div>
   </div>
 
@@ -805,7 +1317,7 @@ mjx-container[display="true"] + br {
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li></ul>
     </div>
   </div>
 
@@ -816,6 +1328,10 @@ mjx-container[display="true"] + br {
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2026/08/05/final_credit_scorecard_project_report/">基于 LendingClub 已发放贷款样本的信用损失评分卡项目报告</a>
+          </li>
         
           <li>
             <a href="/2026/07/31/%E7%94%B5%E5%95%86%E7%BB%8F%E8%90%A5%E7%9C%8B%E6%9D%BF%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/">电商用户行为与经营异动数据分析报告（附Power BI 看板展示）</a>
